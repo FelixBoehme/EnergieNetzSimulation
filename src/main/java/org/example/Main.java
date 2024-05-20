@@ -18,7 +18,7 @@ public class Main {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // TODO: add url restriction based on production env
-                        .allowedMethods("GET", "POST", "PUT", "DELETE");
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
             }
         };
     }

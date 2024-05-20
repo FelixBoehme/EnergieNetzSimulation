@@ -10,12 +10,14 @@ public class EnergyStoreController {
     @Autowired
     private EnergyStoreService energyStoreService;
 
+    // TODO: is this needed? probably will exist in some earlier response
     @GetMapping("/api/energyStore/{energyStoreId}")
     @ResponseBody
     public EnergyStore getEnergyStore(@PathVariable("energyStoreId") Long id) {
         return energyStoreService.getenergyStore(id);
     }
 
+    // TODO: is this needed? maybe only active and not in a netowork
     @GetMapping("api/energyStore/active")
     @ResponseBody
     public Iterable<EnergyStore> getAllEnergyStores() {

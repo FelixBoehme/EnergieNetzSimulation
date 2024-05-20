@@ -28,6 +28,11 @@ public class NetworkController {
         return networkService.getCapacity(networkId);
     }
 
+    @GetMapping("api/network/{networkId}/stores")
+    public Iterable<EnergyStore> getStores(@PathVariable("networkId") Long networkId) {
+        return networkService.getStores(networkId);
+    }
+
     @PostMapping("api/network")
     public ResponseEntity<Network> addNetwork(@RequestBody Network network) {
         return networkService.addNetwork(network);

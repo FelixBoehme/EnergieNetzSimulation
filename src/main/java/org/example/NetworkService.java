@@ -104,4 +104,10 @@ public class NetworkService {
 
         return networkCapacity - amount;
     }
+
+    public Iterable<EnergyStore> getStores(Long networkId) {
+        Network network = networkRepository.findById(networkId).orElseThrow(() -> new RuntimeException("not found"));
+
+        return energyStoreRepository.findByNetwork(network);
+    }
 }
