@@ -23,14 +23,9 @@ public class NetworkController {
         return networkService.getAllNetworks();
     }
 
-    @GetMapping("api/network/{networkId}/capacity/relative")
-    public Float getCapacityRelative(@PathVariable("networkId") Long networkId) {
-        return networkService.getCapacityRelative(networkId);
-    }
-
-    @GetMapping("api/network/{networkId}/capacity/absolute")
-    public Map<String, Float> getCapacityAbsolute(@PathVariable("networkId") Long networkId) {
-        return networkService.getCapacityAbsolute(networkId);
+    @GetMapping("api/network/{networkId}/capacity")
+    public Map<String, Float> getCapacity(@PathVariable("networkId") Long networkId) {
+        return networkService.getCapacity(networkId);
     }
 
     @PostMapping("api/network")

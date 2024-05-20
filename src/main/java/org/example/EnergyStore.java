@@ -2,6 +2,8 @@ package org.example;
 
 import jakarta.persistence.*;
 
+// TODO: separate class for outputting values
+
 @Entity
 public class EnergyStore {
 

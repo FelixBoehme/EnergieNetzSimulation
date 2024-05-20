@@ -37,7 +37,8 @@ public class EnergyStoreController {
         return energyStoreService.updateCurrentCapacity(energyStoreId, change);
     }
 
-    @DeleteMapping("api/network/energyStore/{energyStoreId}")
+    // maybe rename to delete from network
+    @DeleteMapping("api/energyStore/{energyStoreId}/network")
     public ResponseEntity<EnergyStore> deleteEnergyStore(@PathVariable("energyStoreId") Long energyStoreId) {
         return energyStoreService.deleteEnergyStore(energyStoreId);
     }

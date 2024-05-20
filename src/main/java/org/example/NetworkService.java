@@ -42,38 +42,28 @@ public class NetworkService {
         return networkRepository.findAll();
     }
 
-    public Float getCapacityRelative(Long networkId) {
+    public Map<String, Float> getCapacity(Long networkId) {
         Network network = networkRepository.findById(networkId).orElseThrow(() -> new RuntimeException("not found"));
 
         Iterable<EnergyStore> energyStores = energyStoreRepository.findByNetwork(network);
 
         Float maxCapacitySum = 0F;
-        Float currentCapacitySum = 0F;
+        float currentCapacitySum = 0F;
+        float percentageCapactity = 0F;
 
         for (EnergyStore energyStore: energyStores) {
             maxCapacitySum += energyStore.getMaxCapacity();
             currentCapacitySum += energyStore.getCurrentCapacity();
         }
 
-        return currentCapacitySum / maxCapacitySum;
-    }
-
-    public Map<String, Float> getCapacityAbsolute(Long networkId) {
-        Network network = networkRepository.findById(networkId).orElseThrow(() -> new RuntimeException("not found"));
-
-        Iterable<EnergyStore> energyStores = energyStoreRepository.findByNetwork(network);
-
-        Float maxCapacitySum = 0F;
-        Float currentCapacitySum = 0F;
-
-        for (EnergyStore energyStore: energyStores) {
-            maxCapacitySum += energyStore.getMaxCapacity();
-            currentCapacitySum += energyStore.getCurrentCapacity();
+        if (maxCapacitySum != 0F) {
+            percentageCapactity = currentCapacitySum / maxCapacitySum;
         }
 
         HashMap<String, Float> map = new HashMap<>();
         map.put("maxCapacity", maxCapacitySum);
         map.put("currentCapacity", currentCapacitySum);
+        map.put("percentageCapacity", percentageCapactity);
 
         return map;
     }
@@ -84,7 +74,7 @@ public class NetworkService {
         List<EnergyStore> energyStores = energyStoreRepository.findByNetworkAndDeletedFalseAndCurrentCapacityGreaterThanOrderByCurrentCapacityAsc(network, 0);
 
         float drawnCapacity = 0F;
-        Float networkCapacity = getCapacityAbsolute(networkId).get("currentCapacity");
+        Float networkCapacity = getCapacity(networkId).get("currentCapacity");
 
         if (amount > networkCapacity) {
             throw new RuntimeException("not enough capacity in network");
