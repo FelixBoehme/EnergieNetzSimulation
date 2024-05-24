@@ -13,6 +13,11 @@ public class EnergyStoreService {
     @Autowired
     private EnergyStoreRepository energyStoreRepository;
 
+    public EnergyStoreService(NetworkRepository networkRepository, EnergyStoreRepository energyStoreRepository) {
+        this.networkRepository = networkRepository;
+        this.energyStoreRepository = energyStoreRepository;
+    }
+
     public EnergyStore getenergyStore(Long id) {
         return energyStoreRepository.findById(id).orElseThrow(() -> new RuntimeException("not found"));
     }
