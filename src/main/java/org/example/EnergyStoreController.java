@@ -14,7 +14,7 @@ public class EnergyStoreController {
     @GetMapping("/api/energyStore/{energyStoreId}")
     @ResponseBody
     public EnergyStore getEnergyStore(@PathVariable("energyStoreId") Long id) {
-        return energyStoreService.getenergyStore(id);
+        return energyStoreService.getEnergyStore(id);
     }
 
     // TODO: is this needed? maybe only active and not in a netowork

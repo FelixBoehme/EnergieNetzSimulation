@@ -18,7 +18,7 @@ public class EnergyStoreService {
         this.energyStoreRepository = energyStoreRepository;
     }
 
-    public EnergyStore getenergyStore(Long id) {
+    public EnergyStore getEnergyStore(Long id) {
         return energyStoreRepository.findById(id).orElseThrow(() -> new RuntimeException("not found"));
     }
 

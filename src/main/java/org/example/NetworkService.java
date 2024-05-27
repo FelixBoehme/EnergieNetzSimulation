@@ -69,6 +69,8 @@ public class NetworkService {
     }
 
     public Float drawCapacity(Long networkId, Float amount) {
+        if (amount < 0) throw new RuntimeException("amount below zero");
+
         Network network = networkRepository.findById(networkId).orElseThrow(() -> new RuntimeException("not found"));
 
         List<EnergyStore> energyStores = energyStoreRepository.findByNetworkAndDeletedFalseAndCurrentCapacityGreaterThanOrderByCurrentCapacityAsc(network, 0);
