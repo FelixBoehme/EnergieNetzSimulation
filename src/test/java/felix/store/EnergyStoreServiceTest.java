@@ -1,7 +1,9 @@
-package org.example;
+package felix.store;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import felix.network.NetworkRepository;
 
 import java.util.Optional;
 
@@ -14,7 +16,7 @@ public class EnergyStoreServiceTest {
     @Test
     public void throwExceptionWhenDecreasingCapacityBelowZero() {
         NetworkRepository networkRepository = mock(NetworkRepository.class);
-        EnergyStoreRepository energyStoreRepository = mock(EnergyStoreRepository.class);
+        EnergyStoreRepository energyStoreRepository = Mockito.mock(EnergyStoreRepository.class);
         EnergyStore energyStore = new EnergyStore();
         when(energyStoreRepository.findById(0L)).thenReturn(Optional.ofNullable(energyStore));
 

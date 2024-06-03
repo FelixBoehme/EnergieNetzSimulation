@@ -1,6 +1,7 @@
-package org.example;
+package felix.network;
 
 import jakarta.persistence.*;
+import felix.store.EnergyStore;
 
 import java.util.List;
 

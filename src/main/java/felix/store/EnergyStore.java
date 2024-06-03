@@ -1,5 +1,6 @@
-package org.example;
+package felix.store;
 
+import felix.network.Network;
 import jakarta.persistence.*;
 
 // TODO: separate class for outputting values

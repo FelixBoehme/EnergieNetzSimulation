@@ -1,5 +1,6 @@
-package org.example;
+package felix.network;
 
+import felix.store.EnergyStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

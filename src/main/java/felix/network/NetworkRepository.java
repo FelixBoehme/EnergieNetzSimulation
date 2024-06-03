@@ -1,4 +1,4 @@
-package org.example;
+package felix.network;
 
 import org.springframework.data.repository.CrudRepository;
 

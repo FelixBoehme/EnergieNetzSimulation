@@ -1,5 +1,6 @@
-package org.example;
+package felix.store;
 
+import felix.network.Network;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 

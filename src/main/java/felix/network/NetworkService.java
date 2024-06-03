@@ -1,5 +1,7 @@
-package org.example;
+package felix.network;
 
+import felix.store.EnergyStore;
+import felix.store.EnergyStoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
