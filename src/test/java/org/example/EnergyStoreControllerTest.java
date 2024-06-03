@@ -10,6 +10,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(value = EnergyStoreController.class, excludeAutoConfiguration = {SecurityAutoConfiguration.class, SecurityConfig.class})
 @AutoConfigureMockMvc(addFilters = false)
-// @Import(DisableSecurityConfiguration.class)
+@EnableWebSecurity
 public class EnergyStoreControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -35,8 +38,8 @@ public class EnergyStoreControllerTest {
 
     @Test
     public void addEnergyStoreTest() throws Exception {
-        mockMvc.perform(post("/api/energyStore").content("""
-                { id: 1 }
+        mockMvc.perform(post("/api/energyStore").contentType(MediaType.APPLICATION_JSON).content("""
+                { "id": 1 }
                 """)).andExpect(status().isOk());
         verify(energyStoreService, times(1)).addEnergyStore(energyStoreArgumentCaptor.capture());
         assertThat(energyStoreArgumentCaptor.getValue().getId()).isEqualTo(1L);
