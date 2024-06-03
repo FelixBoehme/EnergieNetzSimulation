@@ -13,4 +13,7 @@ public interface EnergyStoreRepository extends CrudRepository<EnergyStore, Long>
     List<EnergyStore> findByNetworkAndDeletedFalseAndCurrentCapacityGreaterThanOrderByCurrentCapacityAsc(Network network, Integer currentCapacity);
 
     Iterable<EnergyStore> findByNetwork(Network network);
+
+    @Query("SELECT e FROM EnergyStore e WHERE e.network IS NULL AND e.deleted = FALSE")
+    Iterable<EnergyStore> findUnassigned();
 }

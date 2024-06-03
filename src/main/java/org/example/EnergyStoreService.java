@@ -44,8 +44,7 @@ public class EnergyStoreService {
             throw new RuntimeException("can't reduce capacity below zero");
         } else if (newCapacity > energyStore.getMaxCapacity()) {
             throw new RuntimeException("can't increase capacity beyond the maximum capacity");
-        }
-        else {
+        } else {
             energyStore.setCurrentCapacity(newCapacity);
         }
         energyStoreRepository.save(energyStore);
@@ -62,6 +61,7 @@ public class EnergyStoreService {
         return new ResponseEntity<>(energyStore, HttpStatus.OK);
     }
 
+    // TODO: check if values provided aren't none
     public ResponseEntity<EnergyStore> addEnergyStore(EnergyStore energyStore) {
         energyStoreRepository.save(energyStore);
 
@@ -74,5 +74,9 @@ public class EnergyStoreService {
         energyStoreRepository.save(energyStore);
 
         return new ResponseEntity<>(energyStore, HttpStatus.OK);
+    }
+
+    public Iterable<EnergyStore> getUnassignedEnergyStores() {
+        return energyStoreRepository.findUnassigned();
     }
 }

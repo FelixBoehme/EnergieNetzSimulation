@@ -51,7 +51,7 @@ public class NetworkService {
         float currentCapacitySum = 0F;
         float percentageCapactity = 0F;
 
-        for (EnergyStore energyStore: energyStores) {
+        for (EnergyStore energyStore : energyStores) {
             maxCapacitySum += energyStore.getMaxCapacity();
             currentCapacitySum += energyStore.getCurrentCapacity();
         }
@@ -84,10 +84,10 @@ public class NetworkService {
 
         int nmbOfStores = energyStores.size();
 
-        while (drawnCapacity < amount){
+        while (drawnCapacity < amount) {
             float drawPerStore = (amount - drawnCapacity) / nmbOfStores;
 
-            for (EnergyStore energyStore: energyStores) {
+            for (EnergyStore energyStore : energyStores) {
                 Float storeCapacity = energyStore.getCurrentCapacity();
                 if (storeCapacity == 0) continue;
 

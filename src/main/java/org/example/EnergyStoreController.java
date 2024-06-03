@@ -24,14 +24,20 @@ public class EnergyStoreController {
         return energyStoreService.getActiveEnergyStores();
     }
 
+    @GetMapping("api/energyStore/unassigned")
+    @ResponseBody
+    public Iterable<EnergyStore> getUnassignedEnergyStores() {
+        return energyStoreService.getUnassignedEnergyStores();
+    }
+
     @PostMapping("api/energyStore")
     public ResponseEntity<EnergyStore> addEnergyStore(@RequestBody EnergyStore energyStore) {
-        return  energyStoreService.addEnergyStore(energyStore);
+        return energyStoreService.addEnergyStore(energyStore);
     }
 
     @PostMapping("api/energyStore/network/{networkId}")
     public ResponseEntity<EnergyStore> addEnergyStoreWithNetwork(@RequestBody EnergyStore energyStore, @PathVariable("networkId") Long networkId) {
-        return  energyStoreService.addEnergyStoreWithNetwork(energyStore, networkId);
+        return energyStoreService.addEnergyStoreWithNetwork(energyStore, networkId);
     }
 
     @PutMapping("api/energyStore/{energyStoreId}/capacity/{change}")

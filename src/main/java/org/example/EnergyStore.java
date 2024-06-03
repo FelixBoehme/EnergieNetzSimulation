@@ -47,6 +47,10 @@ public class EnergyStore {
         return currentCapacity;
     }
 
+    public void setCurrentCapacity(Float newCapacity) {
+        this.currentCapacity = newCapacity;
+    }
+
     public String getLocation() {
         return location;
     }
@@ -77,9 +81,5 @@ public class EnergyStore {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
-    }
-
-    public void setCurrentCapacity(Float newCapacity) {
-        this.currentCapacity = newCapacity;
     }
 }
