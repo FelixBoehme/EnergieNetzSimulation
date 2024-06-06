@@ -1,11 +1,16 @@
 package felix.store;
 
 import felix.network.Network;
+import felix.network.NetworkController;
 import felix.network.NetworkRepository;
+import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 @Component
 public class EnergyStoreService {
@@ -15,17 +20,28 @@ public class EnergyStoreService {
     @Autowired
     private EnergyStoreRepository energyStoreRepository;
 
+    Logger logger = LoggerFactory.getLogger(NetworkController.class);
+
+    String storeNotFoundMessage = "Couldn't find Store with ID: ";
+    String networkNotFoundMessage = "Couldn't find Network with ID: ";
+
     public EnergyStoreService(NetworkRepository networkRepository, EnergyStoreRepository energyStoreRepository) {
         this.networkRepository = networkRepository;
         this.energyStoreRepository = energyStoreRepository;
     }
 
-    public EnergyStore getEnergyStore(Long id) {
-        return energyStoreRepository.findById(id).orElseThrow(() -> new RuntimeException("not found"));
+    public EnergyStore getEnergyStore(Long storeId) {
+        return energyStoreRepository.findById(storeId).orElseThrow(() -> {
+            String error = storeNotFoundMessage + storeId;
+            return new EntityNotFoundException(error);
+        });
     }
 
-    public ResponseEntity<EnergyStore> deleteEnergyStore(Long energyStoreId) {
-        EnergyStore energyStore = energyStoreRepository.findById(energyStoreId).orElseThrow(() -> new RuntimeException("not found"));
+    public ResponseEntity<EnergyStore> deleteEnergyStore(Long storeId) {
+        EnergyStore energyStore = energyStoreRepository.findById(storeId).orElseThrow(() -> {
+            String error = storeNotFoundMessage + storeId;
+            return new EntityNotFoundException(error);
+        });
         energyStore.deleteFromNetwork();
 
         energyStoreRepository.save(energyStore);
@@ -37,15 +53,20 @@ public class EnergyStoreService {
         return energyStoreRepository.findAllActive();
     }
 
-    public ResponseEntity<EnergyStore> updateCurrentCapacity(Long energyStoreId, Float change) {
-        EnergyStore energyStore = energyStoreRepository.findById(energyStoreId).orElseThrow(() -> new RuntimeException("not found"));
+    public ResponseEntity<EnergyStore> updateCurrentCapacity(Long storeId, Float change) {
+        EnergyStore energyStore = energyStoreRepository.findById(storeId).orElseThrow(() -> {
+            String error = storeNotFoundMessage + storeId;
+            return new EntityNotFoundException(error);
+        });
 
         float newCapacity = energyStore.getCurrentCapacity() + change;
 
         if (newCapacity < 0) {
-            throw new RuntimeException("can't reduce capacity below zero");
+            logger.error("Can't reduce capacity of Store with ID {}, by {}, because the result would be negative", storeId, change);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         } else if (newCapacity > energyStore.getMaxCapacity()) {
-            throw new RuntimeException("can't increase capacity beyond the maximum capacity");
+            logger.error("Can't increase capacity of Store with ID {}. by {}, because the result would exceed the Stores maximum capacity", storeId, change);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         } else {
             energyStore.setCurrentCapacity(newCapacity);
         }
@@ -54,8 +75,11 @@ public class EnergyStoreService {
         return new ResponseEntity<>(energyStore, HttpStatus.OK);
     }
 
-    public ResponseEntity<EnergyStore> softDeleteEnergyStore(Long energyStoreId) {
-        EnergyStore energyStore = energyStoreRepository.findById(energyStoreId).orElseThrow(() -> new RuntimeException("not found"));
+    public ResponseEntity<EnergyStore> softDeleteEnergyStore(Long storeId) {
+        EnergyStore energyStore = energyStoreRepository.findById(storeId).orElseThrow(() -> {
+            String error = storeNotFoundMessage + storeId;
+            return new EntityNotFoundException(error);
+        });
         energyStore.setDeleted(true);
 
         energyStoreRepository.save(energyStore);
@@ -71,7 +95,10 @@ public class EnergyStoreService {
     }
 
     public ResponseEntity<EnergyStore> addEnergyStoreWithNetwork(EnergyStore energyStore, Long networkId) {
-        Network network = networkRepository.findById(networkId).orElseThrow(() -> new RuntimeException("not found"));
+        Network network = networkRepository.findById(networkId).orElseThrow(() -> {
+            String error = networkNotFoundMessage + networkId;
+            return new EntityNotFoundException(error);
+        });
         energyStore.setNetwork(network);
         energyStoreRepository.save(energyStore);
 
