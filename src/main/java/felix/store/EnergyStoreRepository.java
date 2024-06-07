@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EnergyStoreRepository extends CrudRepository<EnergyStore, Long> {
-    // TODO: make sure deleted stores are only returned when explicitly asked for
 
     @Query("SELECT e FROM EnergyStore e WHERE e.id = :storeId AND e.deleted = FALSE")
     Optional<EnergyStore> findByIdActive(Long storeId);

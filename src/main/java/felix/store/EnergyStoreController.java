@@ -2,6 +2,7 @@ package felix.store;
 
 import felix.network.NetworkController;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,6 @@ public class EnergyStoreController {
         return energyStoreService.getEnergyStore(id);
     }
 
-    // TODO: is this needed? maybe only active and not in a network
     @GetMapping("api/energyStore/active")
     @ResponseBody
     public Iterable<EnergyStore> getAllEnergyStores() {
@@ -43,13 +43,13 @@ public class EnergyStoreController {
     }
 
     @PostMapping("api/energyStore")
-    public ResponseEntity<EnergyStore> addEnergyStore(@RequestBody EnergyStore energyStore) {
-        return energyStoreService.addEnergyStore(energyStore);
+    public ResponseEntity<EnergyStore> addEnergyStore(@Valid @RequestBody NewEnergyStoreWithoutNetwork newEnergyStore) {
+        return energyStoreService.addEnergyStore(newEnergyStore);
     }
 
     @PostMapping("api/energyStore/network/{networkId}")
-    public ResponseEntity<EnergyStore> addEnergyStoreWithNetwork(@RequestBody EnergyStore energyStore, @PathVariable("networkId") Long networkId) {
-        return energyStoreService.addEnergyStoreWithNetwork(energyStore, networkId);
+    public ResponseEntity<EnergyStore> addEnergyStoreWithNetwork(@Valid @RequestBody NewEnergyStore newEnergyStore, @PathVariable("networkId") Long networkId) {
+        return energyStoreService.addEnergyStoreWithNetwork(newEnergyStore, networkId);
     }
 
     @PutMapping("api/energyStore/{energyStoreId}/capacity/{change}")

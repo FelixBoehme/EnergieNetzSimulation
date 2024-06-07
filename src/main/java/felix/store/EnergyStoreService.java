@@ -87,18 +87,21 @@ public class EnergyStoreService {
         return new ResponseEntity<>(energyStore, HttpStatus.OK);
     }
 
-    // TODO: check if values provided aren't none => introduce new types used for receiving data annotated with @NotNull and use @Valid
-    public ResponseEntity<EnergyStore> addEnergyStore(EnergyStore energyStore) {
+    public ResponseEntity<EnergyStore> addEnergyStore(NewEnergyStoreWithoutNetwork newEnergyStore) {
+        EnergyStore energyStore = newEnergyStore.toEnergyStore();
         energyStoreRepository.save(energyStore);
 
         return new ResponseEntity<>(energyStore, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<EnergyStore> addEnergyStoreWithNetwork(EnergyStore energyStore, Long networkId) {
+    public ResponseEntity<EnergyStore> addEnergyStoreWithNetwork(NewEnergyStore newEnergyStore, Long networkId) {
         Network network = networkRepository.findById(networkId).orElseThrow(() -> {
             String error = networkNotFoundMessage + networkId;
             return new EntityNotFoundException(error);
         });
+
+        EnergyStore energyStore = newEnergyStore.toEnergyStore(network);
+
         energyStore.setNetwork(network);
         energyStoreRepository.save(energyStore);
 
