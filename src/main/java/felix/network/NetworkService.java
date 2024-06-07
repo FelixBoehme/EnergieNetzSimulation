@@ -28,13 +28,7 @@ public class NetworkService {
 
     String networkNotFoundMessage = "Couldn't find Network with ID: ";
 
-    public ResponseEntity<Network> addNetwork(Network network) {
-        networkRepository.save(network);
-
-        return new ResponseEntity<>(network, HttpStatus.CREATED);
-    }
-
-    public Network getNetwork(Long networkId) throws EntityNotFoundException {
+    private Network findNetwork(Long networkId) {
         return networkRepository.findById(networkId).orElseThrow(() -> {
             String error = networkNotFoundMessage + networkId;
             logger.error(error);
@@ -42,17 +36,23 @@ public class NetworkService {
         });
     }
 
-    public ResponseEntity<EnergyStore> addEnergyStore(Long networkId, Long energyStoreId) {
-        EnergyStore energyStore = energyStoreRepository.findByIdActive(energyStoreId).orElseThrow(() -> {
-            String error = "Couldn't find Store with ID: " + energyStoreId;
+    public ResponseEntity<Network> addNetwork(Network network) {
+        networkRepository.save(network);
+
+        return new ResponseEntity<>(network, HttpStatus.CREATED);
+    }
+
+    public Network getNetwork(Long networkId) throws EntityNotFoundException {
+        return findNetwork(networkId);
+    }
+
+    public ResponseEntity<EnergyStore> addEnergyStore(Long networkId, Long storeId) {
+        EnergyStore energyStore = energyStoreRepository.findByIdActive(storeId).orElseThrow(() -> {
+            String error = "Couldn't find Store with ID: " + storeId;
             logger.error(error);
             return new EntityNotFoundException(error);
         });
-        Network network = networkRepository.findById(networkId).orElseThrow(() -> {
-            String error = networkNotFoundMessage + energyStoreId;
-            logger.error(error);
-            return new EntityNotFoundException(error);
-        });
+        Network network = findNetwork(networkId);
         energyStore.setNetwork(network);
 
         energyStoreRepository.save(energyStore);
@@ -65,11 +65,7 @@ public class NetworkService {
     }
 
     public Map<String, Float> getCapacity(Long networkId) {
-        Network network = networkRepository.findById(networkId).orElseThrow(() -> {
-            String error = networkNotFoundMessage + networkId;
-            logger.error(error);
-            return new EntityNotFoundException(error);
-        }); // TODO: not needed anymore, remove and handle error in different place
+        findNetwork(networkId);
 
         Iterable<EnergyStore> energyStores = energyStoreRepository.findByNetwork(networkId);
 
@@ -100,13 +96,9 @@ public class NetworkService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
-        Network network = networkRepository.findById(networkId).orElseThrow(() -> {
-            String error = networkNotFoundMessage + networkId;
-            logger.error(error);
-            return new EntityNotFoundException(error);
-        });
+        findNetwork(networkId);
 
-        List<EnergyStore> energyStores = energyStoreRepository.findByNetworkPositiveCapacity(networkId); // TODO: handle not finding the network
+        List<EnergyStore> energyStores = energyStoreRepository.findByNetworkPositiveCapacity(networkId);
 
         float drawnCapacity = 0F;
         Float networkCapacity = getCapacity(networkId).get("currentCapacity");
@@ -142,11 +134,7 @@ public class NetworkService {
     }
 
     public Iterable<EnergyStore> getStores(Long networkId) {
-        Network network = networkRepository.findById(networkId).orElseThrow(() -> {
-            String error = networkNotFoundMessage + networkId;
-            logger.error(error);
-            return new EntityNotFoundException(error);
-        }); // TODO: not needed anymore, remove and handle error in different place
+        findNetwork(networkId);
 
         return energyStoreRepository.findByNetwork(networkId);
     }
