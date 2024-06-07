@@ -12,8 +12,8 @@ public class EnergyStore {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private EnergyStoreType type;
-    private Integer maxCapacity;
-    private Float currentCapacity = 0F;
+    private Float maxCapacity;
+    private Float currentCapacity;
     private String location;
     private Boolean deleted = false;
 
@@ -24,7 +24,7 @@ public class EnergyStore {
     protected EnergyStore() {
     }
 
-    public EnergyStore(EnergyStoreType type, Integer maxCapacity, Float currentCapacity, String location, Network network) {
+    public EnergyStore(EnergyStoreType type, Float maxCapacity, Float currentCapacity, String location, Network network) {
         this.type = type;
         this.maxCapacity = maxCapacity;
         this.currentCapacity = currentCapacity;
@@ -40,7 +40,7 @@ public class EnergyStore {
         return type;
     }
 
-    public Integer getMaxCapacity() {
+    public Float getMaxCapacity() {
         return maxCapacity;
     }
 
