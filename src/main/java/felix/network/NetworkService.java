@@ -43,7 +43,7 @@ public class NetworkService {
     }
 
     public ResponseEntity<EnergyStore> addEnergyStore(Long networkId, Long energyStoreId) {
-        EnergyStore energyStore = energyStoreRepository.findById(energyStoreId).orElseThrow(() -> {
+        EnergyStore energyStore = energyStoreRepository.findByIdActive(energyStoreId).orElseThrow(() -> {
             String error = "Couldn't find Store with ID: " + energyStoreId;
             logger.error(error);
             return new EntityNotFoundException(error);
@@ -69,9 +69,9 @@ public class NetworkService {
             String error = networkNotFoundMessage + networkId;
             logger.error(error);
             return new EntityNotFoundException(error);
-        });
+        }); // TODO: not needed anymore, remove and handle error in different place
 
-        Iterable<EnergyStore> energyStores = energyStoreRepository.findByNetwork(network);
+        Iterable<EnergyStore> energyStores = energyStoreRepository.findByNetwork(networkId);
 
         Float maxCapacitySum = 0F;
         float currentCapacitySum = 0F;
@@ -106,7 +106,7 @@ public class NetworkService {
             return new EntityNotFoundException(error);
         });
 
-        List<EnergyStore> energyStores = energyStoreRepository.findByNetworkAndDeletedFalseAndCurrentCapacityGreaterThanOrderByCurrentCapacityAsc(network, 0);
+        List<EnergyStore> energyStores = energyStoreRepository.findByNetworkPositiveCapacity(networkId); // TODO: handle not finding the network
 
         float drawnCapacity = 0F;
         Float networkCapacity = getCapacity(networkId).get("currentCapacity");
@@ -146,8 +146,8 @@ public class NetworkService {
             String error = networkNotFoundMessage + networkId;
             logger.error(error);
             return new EntityNotFoundException(error);
-        });
+        }); // TODO: not needed anymore, remove and handle error in different place
 
-        return energyStoreRepository.findByNetwork(network);
+        return energyStoreRepository.findByNetwork(networkId);
     }
 }

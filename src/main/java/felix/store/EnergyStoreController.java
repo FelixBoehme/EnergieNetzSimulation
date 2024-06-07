@@ -29,7 +29,7 @@ public class EnergyStoreController {
         return energyStoreService.getEnergyStore(id);
     }
 
-    // TODO: is this needed? maybe only active and not in a netowork
+    // TODO: is this needed? maybe only active and not in a network
     @GetMapping("api/energyStore/active")
     @ResponseBody
     public Iterable<EnergyStore> getAllEnergyStores() {
@@ -59,8 +59,8 @@ public class EnergyStoreController {
 
     // maybe rename to delete from network
     @DeleteMapping("api/energyStore/{energyStoreId}/network")
-    public ResponseEntity<EnergyStore> deleteEnergyStore(@PathVariable("energyStoreId") Long energyStoreId) {
-        return energyStoreService.deleteEnergyStore(energyStoreId);
+    public ResponseEntity<EnergyStore> deleteStoreFromNetwork(@PathVariable("energyStoreId") Long energyStoreId) {
+        return energyStoreService.deleteStoreFromNetwork(energyStoreId);
     }
 
     @DeleteMapping("api/energyStore/{energyStoreId}")

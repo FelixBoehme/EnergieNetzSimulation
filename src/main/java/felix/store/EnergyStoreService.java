@@ -37,8 +37,8 @@ public class EnergyStoreService {
         });
     }
 
-    public ResponseEntity<EnergyStore> deleteEnergyStore(Long storeId) {
-        EnergyStore energyStore = energyStoreRepository.findById(storeId).orElseThrow(() -> {
+    public ResponseEntity<EnergyStore> deleteStoreFromNetwork(Long storeId) {
+        EnergyStore energyStore = energyStoreRepository.findByIdActive(storeId).orElseThrow(() -> {
             String error = storeNotFoundMessage + storeId;
             return new EntityNotFoundException(error);
         });
@@ -54,7 +54,7 @@ public class EnergyStoreService {
     }
 
     public ResponseEntity<EnergyStore> updateCurrentCapacity(Long storeId, Float change) {
-        EnergyStore energyStore = energyStoreRepository.findById(storeId).orElseThrow(() -> {
+        EnergyStore energyStore = energyStoreRepository.findByIdActive(storeId).orElseThrow(() -> {
             String error = storeNotFoundMessage + storeId;
             return new EntityNotFoundException(error);
         });
@@ -76,7 +76,7 @@ public class EnergyStoreService {
     }
 
     public ResponseEntity<EnergyStore> softDeleteEnergyStore(Long storeId) {
-        EnergyStore energyStore = energyStoreRepository.findById(storeId).orElseThrow(() -> {
+        EnergyStore energyStore = energyStoreRepository.findByIdActive(storeId).orElseThrow(() -> {
             String error = storeNotFoundMessage + storeId;
             return new EntityNotFoundException(error);
         });
@@ -87,7 +87,7 @@ public class EnergyStoreService {
         return new ResponseEntity<>(energyStore, HttpStatus.OK);
     }
 
-    // TODO: check if values provided aren't none
+    // TODO: check if values provided aren't none => introduce new types used for receiving data annotated with @NotNull and use @Valid
     public ResponseEntity<EnergyStore> addEnergyStore(EnergyStore energyStore) {
         energyStoreRepository.save(energyStore);
 
