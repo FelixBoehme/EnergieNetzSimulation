@@ -2,6 +2,7 @@ package felix.network;
 
 import felix.store.EnergyStore;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ public class NetworkController {
     }
 
     @PostMapping("api/network")
-    public ResponseEntity<Network> addNetwork(@RequestBody Network network) {
+    public ResponseEntity<Network> addNetwork(@Valid  @RequestBody Network network) {
         return networkService.addNetwork(network);
     }
 

@@ -2,6 +2,7 @@ package felix.network;
 
 import jakarta.persistence.*;
 import felix.store.EnergyStore;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
@@ -11,6 +12,8 @@ public class Network {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @NotNull
     private String name;
 
     @OneToMany(mappedBy = "network")
