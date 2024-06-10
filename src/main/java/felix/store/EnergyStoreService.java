@@ -59,18 +59,18 @@ public class EnergyStoreService {
             return new EntityNotFoundException(error);
         });
 
-        float newCapacity = energyStore.getCurrentCapacity() + change;
-
-        if (newCapacity < 0) {
-            logger.error("Can't reduce capacity of Store with ID {}, by {}, because the result would be negative", storeId, change);
+        if (change <= 0) {
+            logger.error("Can't increase capacity of Store with ID {}, by {}, because it isn't a positive number", storeId, change);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        } else if (newCapacity > energyStore.getMaxCapacity()) {
-            logger.error("Can't increase capacity of Store with ID {}. by {}, because the result would exceed the Stores maximum capacity", storeId, change);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        } else {
-            energyStore.setCurrentCapacity(newCapacity);
         }
-        energyStoreRepository.save(energyStore);
+
+        try {
+            energyStore.increaseCapacity(change);
+            energyStoreRepository.save(energyStore);
+        } catch (ResponseStatusException e) { // TODO: catch concrete error and use its error message
+            logger.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
 
         return new ResponseEntity<>(energyStore, HttpStatus.OK);
     }

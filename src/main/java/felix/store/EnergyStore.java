@@ -2,6 +2,8 @@ package felix.store;
 
 import felix.network.Network;
 import jakarta.persistence.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 // TODO: separate class for outputting values
 
@@ -32,14 +34,6 @@ public class EnergyStore {
         this.network = network;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public EnergyStoreType getType() {
-        return type;
-    }
-
     public Float getMaxCapacity() {
         return maxCapacity;
     }
@@ -48,12 +42,8 @@ public class EnergyStore {
         return currentCapacity;
     }
 
-    public void setCurrentCapacity(Float newCapacity) {
+    private void setCurrentCapacity(Float newCapacity) {
         this.currentCapacity = newCapacity;
-    }
-
-    public String getLocation() {
-        return location;
     }
 
     public Network getNetwork() {
@@ -68,19 +58,28 @@ public class EnergyStore {
         network = null;
     }
 
-    public void addCapacity() {
-
-    }
-
-    public void removeCapacity() {
-
-    }
-
-    public Boolean getDeleted() {
-        return deleted;
-    }
-
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public void drawCapacity(Float amount) {
+        float newCapacity = currentCapacity - amount;
+
+        if (newCapacity >= 0) {
+            setCurrentCapacity(newCapacity);
+        } else {
+            // TODO: error handling
+        }
+    }
+
+    public void increaseCapacity(Float amount) {
+        float newCapacity = currentCapacity + amount;
+
+        if (newCapacity <= maxCapacity) {
+            setCurrentCapacity(newCapacity);
+        } else {
+            String error = "Can't increase capacity of Store with ID " + id + ", by " + amount + ", because the result would exceed the Stores maximum capacity";
+            throw new RuntimeException(error); // TODO replace with custom exception
+        }
     }
 }
