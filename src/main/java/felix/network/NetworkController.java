@@ -57,8 +57,8 @@ public class NetworkController {
         return networkService.addEnergyStore(networkId, energyStoreId);
     }
 
-    @PutMapping("api/network/{networkId}/capacity/{amount}")
+    @PutMapping("api/network/{networkId}/capacity/{amount}") // maybe get because you get energy, but put is the correct action?
     public Float drawCapacity(@PathVariable("networkId") Long networkId, @PathVariable("amount") Float amount) {
-        return networkService.drawCapacity(networkId, amount);
+        return networkService.drawCapacity(networkId, amount, "fairDraw");
     }
 }

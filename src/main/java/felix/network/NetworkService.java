@@ -2,6 +2,7 @@ package felix.network;
 
 import felix.store.EnergyStore;
 import felix.store.EnergyStoreRepository;
+import felix.store.draw.DrawStrategy;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,9 @@ public class NetworkService {
 
     @Autowired
     private NetworkRepository networkRepository;
+
+    @Autowired
+    private Map<String, DrawStrategy> drawStrategies = new HashMap<>();
 
     Logger logger = LoggerFactory.getLogger(NetworkController.class);
 
@@ -90,7 +94,7 @@ public class NetworkService {
         return map;
     }
 
-    public Float drawCapacity(Long networkId, Float amount) {
+    public Float drawCapacity(Long networkId, Float amount, String drawStrategy) {
         if (amount < 0) {
             logger.error("Can't draw {} (negative capacity) from Network with ID {}", amount, networkId); // TODO: add unit to value
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -100,37 +104,22 @@ public class NetworkService {
 
         List<EnergyStore> energyStores = energyStoreRepository.findByNetworkPositiveCapacity(networkId);
 
-        float drawnCapacity = 0F;
-        Float networkCapacity = getCapacity(networkId).get("currentCapacity");
+        Map<String, Float> networkCapacity = getCapacity(networkId);
+        Float networkCurrentCapacity = networkCapacity.get("currentCapacity");
 
-        if (amount > networkCapacity) {
-            logger.error("Can't draw {} from Network with ID {} because it has a maximum capacity of {}", amount, networkId, networkCapacity); // TODO: add units to values
+        if (amount > networkCurrentCapacity) {
+            logger.error("Can't draw {} from Network with ID {} because it has a maximum capacity of {}", amount, networkId, networkCurrentCapacity); // TODO: add units to values
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
+        // TODO: maybe handle exception in each strategy
 
-        int nmbOfStores = energyStores.size();
+        Float networkMaxCapacity = networkCapacity.get("maxCapacity");
 
-        while (drawnCapacity < amount) {
-            float drawPerStore = (amount - drawnCapacity) / nmbOfStores;
-
-            for (EnergyStore energyStore : energyStores) {
-                Float storeCapacity = energyStore.getCurrentCapacity();
-                if (storeCapacity == 0) continue;
-
-                // set the draw per iteration to the highest possible value
-                if (drawPerStore > storeCapacity) {
-                    drawPerStore = storeCapacity;
-                    nmbOfStores -= 1; // store is now empty, so it can't be drawn from
-                }
-
-                energyStore.setCurrentCapacity(storeCapacity - drawPerStore);
-                drawnCapacity += drawPerStore;
-            }
-        }
+        drawStrategies.get(drawStrategy).draw(energyStores, amount, networkCurrentCapacity, networkMaxCapacity);
 
         energyStoreRepository.saveAll(energyStores);
 
-        return networkCapacity - amount;
+        return networkCurrentCapacity - amount;
     }
 
     public Iterable<EnergyStore> getStores(Long networkId) {
