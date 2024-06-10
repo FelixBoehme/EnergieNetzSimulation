@@ -15,7 +15,7 @@ public interface EnergyStoreRepository extends CrudRepository<EnergyStore, Long>
     @Query("SELECT e FROM EnergyStore e WHERE e.deleted = FALSE")
     Iterable<EnergyStore> findAllActive();
 
-    @Query("SELECT e FROM EnergyStore e LEFT JOIN Network n ON e.network.id = :networkId WHERE e.currentCapacity >= 0 AND e.deleted = FALSE ORDER BY e.currentCapacity ASC")
+    @Query("SELECT e FROM EnergyStore e JOIN Network n ON e.network.id = :networkId WHERE e.currentCapacity >= 0 AND e.deleted = FALSE ORDER BY e.currentCapacity ASC")
     List<EnergyStore> findByNetworkPositiveCapacity(Long networkId);
 
     @Query("SELECT e FROM EnergyStore e WHERE e.network.id = :networkId AND e.deleted = FALSE")
