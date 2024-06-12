@@ -1,13 +1,28 @@
 package felix.store.draw;
 
 import felix.store.EnergyStore;
+import felix.store.EnergyStoreRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class EvenDraw implements DrawStrategy {
-    public void draw(List<EnergyStore> energyStores, Float amount, Float networkCurrentCapacity, Float networkMaxCapacity) {
+    @Autowired
+    EnergyStoreRepository energyStoreRepository;
+
+    public Float draw(Float amount, Long networkId) {
+        Map<String, Double> networkCapacity = energyStoreRepository.getCapacity(networkId);
+        float networkCurrentCapacity = networkCapacity.get("currentCapacity").floatValue();
+
+        if (amount > networkCurrentCapacity) {
+            throw new DrawBelowZeroException(amount, networkId, networkCurrentCapacity);
+        }
+
+        List<EnergyStore> energyStores = energyStoreRepository.findByNetworkPositiveCapacity(networkId);
+
         float drawnCapacity = 0F;
         int nmbOfStores = energyStores.size();
 
@@ -29,6 +44,6 @@ public class EvenDraw implements DrawStrategy {
                 drawnCapacity += drawPerStore;
             }
         }
-
+        return networkCurrentCapacity - amount;
     }
 }

@@ -49,7 +49,7 @@ public class EnergyStoreController {
 
     @PostMapping("api/energyStore/network/{networkId}")
     public ResponseEntity<EnergyStore> addEnergyStoreWithNetwork(@Valid @RequestBody NewEnergyStore newEnergyStore, @PathVariable("networkId") Long networkId) {
-        return energyStoreService.addEnergyStoreWithNetwork(newEnergyStore, networkId);
+        return energyStoreService.addEnergyStoreWithNetwork(newEnergyStore, networkId); // TODO: check whether maxCapacity is above or equal to currentCapacity
     }
 
     @PutMapping("api/energyStore/{energyStoreId}/capacity/{change}")

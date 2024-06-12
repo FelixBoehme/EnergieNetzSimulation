@@ -68,30 +68,10 @@ public class NetworkService {
         return networkRepository.findAll();
     }
 
-    public Map<String, Float> getCapacity(Long networkId) {
-        findNetwork(networkId);
+    public Map<String, Double> getCapacity(Long networkId) {
+        findNetwork(networkId); // TODO: maybe only use one query and handle errors differently
 
-        Iterable<EnergyStore> energyStores = energyStoreRepository.findByNetwork(networkId);
-
-        Float maxCapacitySum = 0F;
-        float currentCapacitySum = 0F;
-        float percentageCapactity = 0F;
-
-        for (EnergyStore energyStore : energyStores) {
-            maxCapacitySum += energyStore.getMaxCapacity();
-            currentCapacitySum += energyStore.getCurrentCapacity();
-        }
-
-        if (maxCapacitySum != 0F) {
-            percentageCapactity = currentCapacitySum / maxCapacitySum;
-        }
-
-        HashMap<String, Float> map = new HashMap<>();
-        map.put("maxCapacity", maxCapacitySum);
-        map.put("currentCapacity", currentCapacitySum);
-        map.put("percentageCapacity", percentageCapactity);
-
-        return map;
+        return energyStoreRepository.getCapacity(networkId);
     }
 
     public Float drawCapacity(Long networkId, Float amount, String drawStrategy) {
@@ -102,24 +82,7 @@ public class NetworkService {
 
         findNetwork(networkId);
 
-        List<EnergyStore> energyStores = energyStoreRepository.findByNetworkPositiveCapacity(networkId);
-
-        Map<String, Float> networkCapacity = getCapacity(networkId);
-        Float networkCurrentCapacity = networkCapacity.get("currentCapacity");
-
-        if (amount > networkCurrentCapacity) {
-            logger.error("Can't draw {} from Network with ID {} because it has a maximum capacity of {}", amount, networkId, networkCurrentCapacity); // TODO: add units to values
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-        // TODO: maybe handle exception in each strategy
-
-        Float networkMaxCapacity = networkCapacity.get("maxCapacity");
-
-        drawStrategies.get(drawStrategy).draw(energyStores, amount, networkCurrentCapacity, networkMaxCapacity);
-
-        energyStoreRepository.saveAll(energyStores);
-
-        return networkCurrentCapacity - amount;
+        return drawStrategies.get(drawStrategy).draw(amount, networkId);
     }
 
     public Iterable<EnergyStore> getStores(Long networkId) {

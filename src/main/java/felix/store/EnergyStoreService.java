@@ -51,6 +51,7 @@ public class EnergyStoreService {
 
     public Iterable<EnergyStore> getActiveEnergyStores() {
         return energyStoreRepository.findAllActive();
+        return energyStoreRepository.findAllActive(); // TODO: find out why not all attributes are returned / introduce new class for returning data
     }
 
     public ResponseEntity<EnergyStore> updateCurrentCapacity(Long storeId, Float change) {
