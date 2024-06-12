@@ -2,8 +2,6 @@ package felix.store;
 
 import felix.network.Network;
 import jakarta.persistence.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 // TODO: separate class for outputting values
 
@@ -34,6 +32,14 @@ public class EnergyStore {
         this.network = network;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public EnergyStoreType getType() {
+        return type;
+    }
+
     public Float getMaxCapacity() {
         return maxCapacity;
     }
@@ -42,12 +48,20 @@ public class EnergyStore {
         return currentCapacity;
     }
 
-    private void setCurrentCapacity(Float newCapacity) {
-        this.currentCapacity = newCapacity;
+    public String getLocation() {
+        return location;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
     }
 
     public Network getNetwork() {
         return network;
+    }
+
+    private void setCurrentCapacity(Float newCapacity) {
+        this.currentCapacity = newCapacity;
     }
 
     public void setNetwork(Network network) {
