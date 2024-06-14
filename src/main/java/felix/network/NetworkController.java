@@ -1,6 +1,9 @@
 package felix.network;
 
 import felix.store.EnergyStore;
+import felix.store.EnergyStoreNotFoundException;
+import felix.store.draw.DrawBelowZeroException;
+import felix.store.draw.NegativeDrawException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -21,9 +24,28 @@ public class NetworkController {
 
     Logger logger = LoggerFactory.getLogger(NetworkController.class);
 
-    @ExceptionHandler({EntityNotFoundException.class})
-    protected ResponseEntity<String> handleNotFound(EntityNotFoundException e) {
+    @ExceptionHandler({NetworkNotFoundException.class})
+    protected ResponseEntity<String> handleNetworkNotFound(NetworkNotFoundException e) {
+        logger.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({EnergyStoreNotFoundException.class})
+    protected ResponseEntity<String> handleStoreNotFound(EnergyStoreNotFoundException e) {
+        logger.error(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({NegativeDrawException.class})
+    protected ResponseEntity<String> handleNegativeDraw(NegativeDrawException e) {
+        logger.error(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({DrawBelowZeroException.class})
+    protected ResponseEntity<String> handleDrawBelowZero(DrawBelowZeroException e) {
+        logger.error(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("api/network/{networkId}")
@@ -38,7 +60,7 @@ public class NetworkController {
     }
 
     @GetMapping("api/network/{networkId}/capacity")
-    public Map<String, Float> getCapacity(@PathVariable("networkId") Long networkId) {
+    public Map<String, Double> getCapacity(@PathVariable("networkId") Long networkId) {
         return networkService.getCapacity(networkId);
     }
 

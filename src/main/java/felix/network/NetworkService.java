@@ -1,19 +1,18 @@
 package felix.network;
 
 import felix.store.EnergyStore;
+import felix.store.EnergyStoreNotFoundException;
 import felix.store.EnergyStoreRepository;
 import felix.store.draw.DrawStrategy;
-import jakarta.persistence.EntityNotFoundException;
+import felix.store.draw.NegativeDrawException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
@@ -33,11 +32,7 @@ public class NetworkService {
     String networkNotFoundMessage = "Couldn't find Network with ID: ";
 
     private Network findNetwork(Long networkId) {
-        return networkRepository.findById(networkId).orElseThrow(() -> {
-            String error = networkNotFoundMessage + networkId;
-            logger.error(error);
-            return new EntityNotFoundException(error);
-        });
+        return networkRepository.findById(networkId).orElseThrow(() -> new NetworkNotFoundException(networkId));
     }
 
     public ResponseEntity<Network> addNetwork(Network network) {
@@ -46,15 +41,13 @@ public class NetworkService {
         return new ResponseEntity<>(network, HttpStatus.CREATED);
     }
 
-    public Network getNetwork(Long networkId) throws EntityNotFoundException {
+    public Network getNetwork(Long networkId) {
         return findNetwork(networkId);
     }
 
     public ResponseEntity<EnergyStore> addEnergyStore(Long networkId, Long storeId) {
         EnergyStore energyStore = energyStoreRepository.findByIdActive(storeId).orElseThrow(() -> {
-            String error = "Couldn't find Store with ID: " + storeId;
-            logger.error(error);
-            return new EntityNotFoundException(error);
+            return new EnergyStoreNotFoundException(storeId);
         });
         Network network = findNetwork(networkId);
         energyStore.setNetwork(network);
@@ -76,8 +69,7 @@ public class NetworkService {
 
     public Float drawCapacity(Long networkId, Float amount, String drawStrategy) {
         if (amount < 0) {
-            logger.error("Can't draw {} (negative capacity) from Network with ID {}", amount, networkId); // TODO: add unit to value
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new NegativeDrawException(amount, networkId);
         }
 
         findNetwork(networkId);

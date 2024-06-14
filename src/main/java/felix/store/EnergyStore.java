@@ -82,7 +82,7 @@ public class EnergyStore {
         if (newCapacity >= 0) {
             setCurrentCapacity(newCapacity);
         } else {
-            // TODO: error handling
+            throw new NegativeCapacityException(id, amount);
         }
     }
 
@@ -92,8 +92,7 @@ public class EnergyStore {
         if (newCapacity <= maxCapacity) {
             setCurrentCapacity(newCapacity);
         } else {
-            String error = "Can't increase capacity of Store with ID " + id + ", by " + amount + ", because the result would exceed the Stores maximum capacity";
-            throw new RuntimeException(error); // TODO replace with custom exception
+            throw new MaxCapacityExceededException(id, amount);
         }
     }
 }

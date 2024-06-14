@@ -20,7 +20,26 @@ public class EnergyStoreController {
 
     @ExceptionHandler({EntityNotFoundException.class})
     protected ResponseEntity<String> handleNotFound(EntityNotFoundException e) {
+        logger.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({NegativeChangeException.class})
+    protected ResponseEntity<String> handleCapacityBelowZero(NegativeChangeException e) {
+        logger.error(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({MaxCapacityExceededException.class})
+    protected ResponseEntity<String> handleMaxCapacityExceeded(MaxCapacityExceededException e) {
+        logger.error(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({NegativeCapacityException.class})
+    protected ResponseEntity<String> handleNegativeCapacity(NegativeCapacityException e) {
+        logger.error(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     // TODO: is this needed? probably will exist in some earlier response

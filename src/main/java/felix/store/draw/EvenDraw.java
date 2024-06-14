@@ -26,7 +26,6 @@ public class EvenDraw implements DrawStrategy {
         float drawnCapacity = 0F;
         int nmbOfStores = energyStores.size();
 
-        // TODO: faire anteilige behandlung der batterien (strategy pattern)
         while (drawnCapacity < amount) {
             float drawPerStore = (amount - drawnCapacity) / nmbOfStores;
 
@@ -40,7 +39,7 @@ public class EvenDraw implements DrawStrategy {
                     nmbOfStores -= 1; // store is now empty, so it can't be drawn from
                 }
 
-                energyStore.drawCapacity(drawPerStore); // TODO: change to drawing instead of setting capacity
+                energyStore.drawCapacity(drawPerStore);
                 drawnCapacity += drawPerStore;
             }
         }
