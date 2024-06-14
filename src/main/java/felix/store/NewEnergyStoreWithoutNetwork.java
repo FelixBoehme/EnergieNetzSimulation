@@ -3,6 +3,7 @@ package felix.store;
 import felix.network.Network;
 import felix.network.NetworkRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,6 +24,12 @@ public class NewEnergyStoreWithoutNetwork {
 
     @NotNull
     private final String location;
+
+    @AssertTrue(message = "The current capacity can't be greater than the maximum capacity")
+    private boolean isCapacityValid() {
+        if (maxCapacity == null || currentCapacity == null) return false;
+        return maxCapacity >= currentCapacity;
+    }
 
     public NewEnergyStoreWithoutNetwork(EnergyStoreType type, Float maxCapacity, Float currentCapacity, String location) {
         this.type = type;
