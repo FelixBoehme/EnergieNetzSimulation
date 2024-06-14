@@ -1,8 +1,6 @@
 package felix.store;
 
-import felix.network.Network;
 import felix.network.NetworkRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
