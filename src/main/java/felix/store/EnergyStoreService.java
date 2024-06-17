@@ -1,15 +1,14 @@
 package felix.store;
 
-import felix.network.Network;
-import felix.network.NetworkController;
-import felix.network.NetworkNotFoundException;
-import felix.network.NetworkRepository;
+import felix.network.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -24,15 +23,6 @@ public class EnergyStoreService {
 
     public EnergyStore getEnergyStore(Long storeId) {
         return energyStoreRepository.findById(storeId).orElseThrow(() -> new EnergyStoreNotFoundException(storeId));
-    }
-
-    public ResponseEntity<EnergyStore> deleteStoreFromNetwork(Long storeId) {
-        EnergyStore energyStore = energyStoreRepository.findByIdActive(storeId).orElseThrow(() -> new EnergyStoreNotFoundException(storeId));
-        energyStore.deleteFromNetwork();
-
-        energyStoreRepository.save(energyStore);
-
-        return new ResponseEntity<>(energyStore, HttpStatus.OK);
     }
 
     public Iterable<EnergyStore> getActiveEnergyStores() {

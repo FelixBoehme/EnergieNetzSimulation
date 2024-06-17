@@ -72,11 +72,6 @@ public class EnergyStoreController {
     }
 
     // maybe rename to delete from network
-    @DeleteMapping("{energyStoreId}/network")
-    public ResponseEntity<EnergyStore> deleteStoreFromNetwork(@PathVariable("energyStoreId") Long energyStoreId) {
-        return energyStoreService.deleteStoreFromNetwork(energyStoreId);
-    }
-
     @DeleteMapping("{energyStoreId}")
     public ResponseEntity<EnergyStore> softDeleteEnergyStore(@PathVariable("energyStoreId") Long energyStoreId) {
         return energyStoreService.softDeleteEnergyStore(energyStoreId);

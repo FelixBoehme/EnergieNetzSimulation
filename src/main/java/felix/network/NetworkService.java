@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -49,6 +50,19 @@ public class NetworkService {
         });
         Network network = findNetwork(networkId);
         energyStore.setNetwork(network);
+
+        energyStoreRepository.save(energyStore);
+
+        return new ResponseEntity<>(energyStore, HttpStatus.OK);
+    }
+
+    public ResponseEntity<EnergyStore> deleteStoreFromNetwork(Long networkId, Long storeId) {
+        EnergyStore energyStore = energyStoreRepository.findByIdActive(storeId).orElseThrow(() -> new EnergyStoreNotFoundException(storeId));
+        Long storeNetworkId = energyStore.getNetwork().getId();
+
+        if (!Objects.equals(networkId, storeNetworkId)) throw new DeleteStoreFromNetworkMismatch(storeNetworkId, networkId);
+
+        energyStore.deleteFromNetwork();
 
         energyStoreRepository.save(energyStore);
 

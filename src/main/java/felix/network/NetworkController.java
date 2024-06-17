@@ -2,6 +2,7 @@ package felix.network;
 
 import felix.store.EnergyStore;
 import felix.store.EnergyStoreNotFoundException;
+import felix.store.EnergyStoreService;
 import felix.store.draw.DrawBelowZeroException;
 import felix.store.draw.NegativeDrawException;
 import jakarta.validation.Valid;
@@ -28,7 +29,7 @@ public class NetworkController {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({NegativeDrawException.class, DrawBelowZeroException.class})
+    @ExceptionHandler({NegativeDrawException.class, DrawBelowZeroException.class, DeleteStoreFromNetworkMismatch.class})
     protected ResponseEntity<String> handleBadRequest(RuntimeException e) {
         logger.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -56,7 +57,7 @@ public class NetworkController {
     }
 
     @PostMapping
-    public ResponseEntity<Network> addNetwork(@Valid  @RequestBody Network network) {
+    public ResponseEntity<Network> addNetwork(@Valid @RequestBody Network network) {
         return networkService.addNetwork(network);
     }
 
@@ -68,5 +69,10 @@ public class NetworkController {
     @PutMapping("{networkId}/capacity/{amount}") // maybe get because you get energy, but put is the correct action?
     public Float drawCapacity(@PathVariable("networkId") Long networkId, @PathVariable("amount") Float amount) {
         return networkService.drawCapacity(networkId, amount, "fairDraw");
+    }
+
+    @DeleteMapping("{networkId}/energyStore/{energyStoreId}")
+    public ResponseEntity<EnergyStore> deleteStoreFromNetwork(@PathVariable("networkId") Long networkId, @PathVariable("energyStoreId") Long energyStoreId) {
+        return networkService.deleteStoreFromNetwork(networkId, energyStoreId);
     }
 }
