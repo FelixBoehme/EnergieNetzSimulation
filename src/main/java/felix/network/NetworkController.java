@@ -55,12 +55,16 @@ public class NetworkController {
 
     @PostMapping
     public ResponseEntity<Network> addNetwork(@Valid @RequestBody Network network) {
-        return networkService.addNetwork(network);
+        networkService.addNetwork(network);
+
+        return new ResponseEntity<>(network, HttpStatus.CREATED);
     }
 
     @PutMapping("{networkId}/energyStore/{energyStoreId}")
     public ResponseEntity<EnergyStore> addEnergyStore(@PathVariable("networkId") Long networkId, @PathVariable("energyStoreId") Long energyStoreId) {
-        return networkService.addEnergyStore(networkId, energyStoreId);
+        EnergyStore energyStore = networkService.addEnergyStore(networkId, energyStoreId);
+
+        return new ResponseEntity<>(energyStore, HttpStatus.OK);
     }
 
     @PutMapping("{networkId}/capacity/{amount}") // maybe get because you get energy, but put is the correct action?
@@ -70,6 +74,8 @@ public class NetworkController {
 
     @DeleteMapping("{networkId}/energyStore/{energyStoreId}")
     public ResponseEntity<EnergyStore> deleteStoreFromNetwork(@PathVariable("networkId") Long networkId, @PathVariable("energyStoreId") Long energyStoreId) {
-        return networkService.deleteStoreFromNetwork(networkId, energyStoreId);
+        EnergyStore energyStore = networkService.deleteStoreFromNetwork(networkId, energyStoreId);
+
+        return new ResponseEntity<>(energyStore, HttpStatus.OK);
     }
 }

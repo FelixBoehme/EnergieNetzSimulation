@@ -7,8 +7,6 @@ import felix.store.draw.DrawStrategy;
 import felix.store.draw.NegativeDrawException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -28,27 +26,23 @@ public class NetworkService {
         return networkRepository.findById(networkId).orElseThrow(() -> new NetworkNotFoundException(networkId));
     }
 
-    public ResponseEntity<Network> addNetwork(Network network) {
+    public void addNetwork(Network network) {
         networkRepository.save(network);
-
-        return new ResponseEntity<>(network, HttpStatus.CREATED);
     }
 
     public Network getNetwork(Long networkId) {
         return findNetwork(networkId);
     }
 
-    public ResponseEntity<EnergyStore> addEnergyStore(Long networkId, Long storeId) {
+    public EnergyStore addEnergyStore(Long networkId, Long storeId) {
         EnergyStore energyStore = energyStoreRepository.findByIdActive(storeId).orElseThrow(() -> new EnergyStoreNotFoundException(storeId));
         Network network = findNetwork(networkId);
         energyStore.setNetwork(network);
 
-        energyStoreRepository.save(energyStore);
-
-        return new ResponseEntity<>(energyStore, HttpStatus.OK);
+        return energyStoreRepository.save(energyStore);
     }
 
-    public ResponseEntity<EnergyStore> deleteStoreFromNetwork(Long networkId, Long storeId) {
+    public EnergyStore deleteStoreFromNetwork(Long networkId, Long storeId) {
         EnergyStore energyStore = energyStoreRepository.findByIdActive(storeId).orElseThrow(() -> new EnergyStoreNotFoundException(storeId));
         Long storeNetworkId = energyStore.getNetwork().getId();
 
@@ -57,9 +51,7 @@ public class NetworkService {
 
         energyStore.deleteFromNetwork();
 
-        energyStoreRepository.save(energyStore);
-
-        return new ResponseEntity<>(energyStore, HttpStatus.OK);
+        return energyStoreRepository.save(energyStore);
     }
 
     public Iterable<Network> getAllNetworks() {

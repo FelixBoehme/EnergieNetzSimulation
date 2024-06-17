@@ -54,22 +54,24 @@ public class EnergyStoreController {
 
     @PostMapping
     public ResponseEntity<EnergyStore> addEnergyStore(@Valid @RequestBody NewEnergyStoreWithoutNetwork newEnergyStore) {
-        return energyStoreService.addEnergyStore(newEnergyStore);
+        EnergyStore energyStore = energyStoreService.addEnergyStore(newEnergyStore);
+        return new ResponseEntity<>(energyStore, HttpStatus.CREATED);
     }
 
     @PostMapping("network/{networkId}")
     public ResponseEntity<EnergyStore> addEnergyStoreWithNetwork(@Valid @RequestBody NewEnergyStore newEnergyStore, @PathVariable("networkId") Long networkId) {
-        return energyStoreService.addEnergyStoreWithNetwork(newEnergyStore, networkId); // TODO: check whether maxCapacity is above or equal to currentCapacity
+        return energyStoreService.addEnergyStoreWithNetwork(newEnergyStore, networkId);
     }
 
     @PutMapping("{energyStoreId}/capacity/{change}")
     public ResponseEntity<EnergyStore> updateCurrentCapacity(@PathVariable("energyStoreId") Long energyStoreId, @PathVariable("change") Float change) {
-        return energyStoreService.updateCurrentCapacity(energyStoreId, change);
+        EnergyStore energyStore = energyStoreService.updateCurrentCapacity(energyStoreId, change);
+        return new ResponseEntity<>(energyStore, HttpStatus.OK);
     }
 
-    // maybe rename to delete from network
     @DeleteMapping("{energyStoreId}")
     public ResponseEntity<EnergyStore> softDeleteEnergyStore(@PathVariable("energyStoreId") Long energyStoreId) {
-        return energyStoreService.softDeleteEnergyStore(energyStoreId);
+        EnergyStore energyStore = energyStoreService.softDeleteEnergyStore(energyStoreId);
+        return new ResponseEntity<>(energyStore, HttpStatus.OK);
     }
 }

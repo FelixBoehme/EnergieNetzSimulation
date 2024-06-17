@@ -94,10 +94,9 @@ public class EnergyStoreServiceTest {
         when(energyStoreRepository.findByIdActive(storeId)).thenReturn(Optional.of(energyStore));
 
         EnergyStoreService energyStoreService = new EnergyStoreService(networkRepository, energyStoreRepository);
+        energyStoreService.softDeleteEnergyStore(storeId);
 
-        EnergyStore resultEnergyStore = energyStoreService.softDeleteEnergyStore(storeId).getBody();
-
-        assertThat(resultEnergyStore.getDeleted()).isEqualTo(true);
+        assertThat(energyStore.getDeleted()).isEqualTo(true);
         verify(energyStoreRepository, times(1)).save(any());
     }
 

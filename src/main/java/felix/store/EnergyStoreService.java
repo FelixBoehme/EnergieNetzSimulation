@@ -22,7 +22,7 @@ public class EnergyStoreService {
         return energyStoreRepository.findAllActive();
     }
 
-    public ResponseEntity<EnergyStore> updateCurrentCapacity(Long storeId, Float change) {
+    public EnergyStore updateCurrentCapacity(Long storeId, Float change) {
         EnergyStore energyStore = energyStoreRepository.findByIdActive(storeId).orElseThrow(() -> new EnergyStoreNotFoundException(storeId));
 
         if (change < 0) {
@@ -30,25 +30,19 @@ public class EnergyStoreService {
         }
 
         energyStore.increaseCapacity(change);
-        energyStoreRepository.save(energyStore);
-
-        return new ResponseEntity<>(energyStore, HttpStatus.OK);
+        return energyStoreRepository.save(energyStore);
     }
 
-    public ResponseEntity<EnergyStore> softDeleteEnergyStore(Long storeId) {
+    public EnergyStore softDeleteEnergyStore(Long storeId) {
         EnergyStore energyStore = energyStoreRepository.findByIdActive(storeId).orElseThrow(() -> new EnergyStoreNotFoundException(storeId));
         energyStore.setDeleted(true);
 
-        energyStoreRepository.save(energyStore);
-
-        return new ResponseEntity<>(energyStore, HttpStatus.OK);
+        return energyStoreRepository.save(energyStore);
     }
 
-    public ResponseEntity<EnergyStore> addEnergyStore(NewEnergyStoreWithoutNetwork newEnergyStore) {
+    public EnergyStore addEnergyStore(NewEnergyStoreWithoutNetwork newEnergyStore) {
         EnergyStore energyStore = newEnergyStore.toEnergyStore();
-        energyStoreRepository.save(energyStore);
-
-        return new ResponseEntity<>(energyStore, HttpStatus.CREATED);
+        return energyStoreRepository.save(energyStore);
     }
 
     public ResponseEntity<EnergyStore> addEnergyStoreWithNetwork(NewEnergyStore newEnergyStore, Long networkId) {
