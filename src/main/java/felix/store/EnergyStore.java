@@ -32,6 +32,15 @@ public class EnergyStore {
         this.network = network;
     }
 
+    public EnergyStore(Long id, EnergyStoreType type, Float maxCapacity, Float currentCapacity, String location, Network network) {
+        this.id = id;
+        this.type = type;
+        this.maxCapacity = maxCapacity;
+        this.currentCapacity = currentCapacity;
+        this.location = location;
+        this.network = network;
+    }
+
     public Long getId() {
         return id;
     }
