@@ -2,7 +2,6 @@ package felix.network;
 
 import felix.store.EnergyStore;
 import felix.store.EnergyStoreNotFoundException;
-import felix.store.EnergyStoreService;
 import felix.store.draw.DrawBelowZeroException;
 import felix.store.draw.NegativeDrawException;
 import jakarta.validation.Valid;

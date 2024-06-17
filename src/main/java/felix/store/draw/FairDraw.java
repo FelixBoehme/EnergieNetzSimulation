@@ -3,7 +3,6 @@ package felix.store.draw;
 import felix.store.EnergyStore;
 import felix.store.EnergyStoreRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

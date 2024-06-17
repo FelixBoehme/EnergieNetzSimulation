@@ -57,6 +57,10 @@ public class EnergyStore {
         return currentCapacity;
     }
 
+    private void setCurrentCapacity(Float newCapacity) {
+        this.currentCapacity = newCapacity;
+    }
+
     public String getLocation() {
         return location;
     }
@@ -65,12 +69,12 @@ public class EnergyStore {
         return deleted;
     }
 
-    public Network getNetwork() {
-        return network;
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
-    private void setCurrentCapacity(Float newCapacity) {
-        this.currentCapacity = newCapacity;
+    public Network getNetwork() {
+        return network;
     }
 
     public void setNetwork(Network network) {
@@ -79,10 +83,6 @@ public class EnergyStore {
 
     public void deleteFromNetwork() {
         network = null;
-    }
-
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
     }
 
     public void drawCapacity(Float amount) {
