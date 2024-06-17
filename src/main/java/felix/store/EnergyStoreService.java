@@ -4,30 +4,23 @@ import felix.network.Network;
 import felix.network.NetworkController;
 import felix.network.NetworkNotFoundException;
 import felix.network.NetworkRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class EnergyStoreService {
-    @Autowired
-    private NetworkRepository networkRepository;
-
-    @Autowired
-    private EnergyStoreRepository energyStoreRepository;
+    private final NetworkRepository networkRepository;
+    private final EnergyStoreRepository energyStoreRepository;
 
     Logger logger = LoggerFactory.getLogger(NetworkController.class);
 
     String storeNotFoundMessage = "Couldn't find Store with ID: ";
     String networkNotFoundMessage = "Couldn't find Network with ID: ";
-
-    public EnergyStoreService(NetworkRepository networkRepository, EnergyStoreRepository energyStoreRepository) {
-        this.networkRepository = networkRepository;
-        this.energyStoreRepository = energyStoreRepository;
-    }
 
     public EnergyStore getEnergyStore(Long storeId) {
         return energyStoreRepository.findById(storeId).orElseThrow(() -> new EnergyStoreNotFoundException(storeId));

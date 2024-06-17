@@ -5,6 +5,7 @@ import felix.store.EnergyStoreNotFoundException;
 import felix.store.EnergyStoreRepository;
 import felix.store.draw.DrawStrategy;
 import felix.store.draw.NegativeDrawException;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +17,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class NetworkService {
+    private final EnergyStoreRepository energyStoreRepository;
+    private final NetworkRepository networkRepository;
 
     @Autowired
-    private EnergyStoreRepository energyStoreRepository;
-
-    @Autowired
-    private NetworkRepository networkRepository;
-
-    @Autowired
-    private Map<String, DrawStrategy> drawStrategies = new HashMap<>();
+    private final Map<String, DrawStrategy> drawStrategies = new HashMap<>();
 
     Logger logger = LoggerFactory.getLogger(NetworkController.class);
 

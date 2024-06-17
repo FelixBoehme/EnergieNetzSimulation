@@ -6,6 +6,7 @@ import felix.store.draw.DrawBelowZeroException;
 import felix.store.draw.NegativeDrawException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 public class NetworkController {
-
-    @Autowired
-    private NetworkService networkService;
+    private final NetworkService networkService;
 
     Logger logger = LoggerFactory.getLogger(NetworkController.class);
 

@@ -6,9 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class NewEnergyStoreWithoutNetwork {
-    @Autowired
-    private NetworkRepository networkRepository;
-
     String networkNotFoundMessage = "Couldn't find Network with ID: ";
 
     @NotNull
@@ -38,10 +35,6 @@ public class NewEnergyStoreWithoutNetwork {
 
     public EnergyStore toEnergyStore() {
         return new EnergyStore(type, maxCapacity, currentCapacity, location, null);
-    }
-
-    public NetworkRepository getNetworkRepository() {
-        return networkRepository;
     }
 
     public String getNetworkNotFoundMessage() {

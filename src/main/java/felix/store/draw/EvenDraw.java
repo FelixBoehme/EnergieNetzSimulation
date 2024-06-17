@@ -2,6 +2,7 @@ package felix.store.draw;
 
 import felix.store.EnergyStore;
 import felix.store.EnergyStoreRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -9,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class EvenDraw implements DrawStrategy {
-    @Autowired
-    EnergyStoreRepository energyStoreRepository;
+    private final EnergyStoreRepository energyStoreRepository;
 
     public Float draw(Float amount, Long networkId) {
         Map<String, Double> networkCapacity = energyStoreRepository.getCapacity(networkId);
