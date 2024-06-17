@@ -18,20 +18,14 @@ public class EnergyStoreController {
 
     Logger logger = LoggerFactory.getLogger(NetworkController.class);
 
-    @ExceptionHandler({EntityNotFoundException.class})
-    protected ResponseEntity<String> handleNotFound(EntityNotFoundException e) {
+    @ExceptionHandler({EntityNotFoundException.class, EnergyStoreNotFoundException.class})
+    protected ResponseEntity<String> handleNotFound(RuntimeException e) {
         logger.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({NegativeChangeException.class})
-    protected ResponseEntity<String> handleCapacityBelowZero(NegativeChangeException e) {
-        logger.error(e.getMessage());
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler({MaxCapacityExceededException.class})
-    protected ResponseEntity<String> handleMaxCapacityExceeded(MaxCapacityExceededException e) {
+    @ExceptionHandler({NegativeChangeException.class, MaxCapacityExceededException.class})
+    protected ResponseEntity<String> handleBadRequest(RuntimeException e) {
         logger.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
