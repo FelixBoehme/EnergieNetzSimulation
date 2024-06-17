@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/network")
 @RequiredArgsConstructor
 public class NetworkController {
     private final NetworkService networkService;
@@ -33,38 +34,38 @@ public class NetworkController {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("api/network/{networkId}")
+    @GetMapping("{networkId}")
     @ResponseBody
     public Network getNetwork(@PathVariable("networkId") Long networkId) {
         return networkService.getNetwork(networkId);
     }
 
-    @GetMapping("api/network/all")
+    @GetMapping("all")
     public Iterable<Network> getAllNetworks() {
         return networkService.getAllNetworks();
     }
 
-    @GetMapping("api/network/{networkId}/capacity")
+    @GetMapping("{networkId}/capacity")
     public Map<String, Double> getCapacity(@PathVariable("networkId") Long networkId) {
         return networkService.getCapacity(networkId);
     }
 
-    @GetMapping("api/network/{networkId}/stores")
+    @GetMapping("{networkId}/stores")
     public Iterable<EnergyStore> getStores(@PathVariable("networkId") Long networkId) {
         return networkService.getStores(networkId);
     }
 
-    @PostMapping("api/network")
+    @PostMapping
     public ResponseEntity<Network> addNetwork(@Valid  @RequestBody Network network) {
         return networkService.addNetwork(network);
     }
 
-    @PutMapping("api/network/{networkId}/energyStore/{energyStoreId}")
+    @PutMapping("{networkId}/energyStore/{energyStoreId}")
     public ResponseEntity<EnergyStore> addEnergyStore(@PathVariable("networkId") Long networkId, @PathVariable("energyStoreId") Long energyStoreId) {
         return networkService.addEnergyStore(networkId, energyStoreId);
     }
 
-    @PutMapping("api/network/{networkId}/capacity/{amount}") // maybe get because you get energy, but put is the correct action?
+    @PutMapping("{networkId}/capacity/{amount}") // maybe get because you get energy, but put is the correct action?
     public Float drawCapacity(@PathVariable("networkId") Long networkId, @PathVariable("amount") Float amount) {
         return networkService.drawCapacity(networkId, amount, "fairDraw");
     }
