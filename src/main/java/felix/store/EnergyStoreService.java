@@ -80,7 +80,6 @@ public class EnergyStoreService {
 
         EnergyStore energyStore = newEnergyStore.toEnergyStore(network);
 
-        energyStore.setNetwork(network);
         energyStoreRepository.save(energyStore);
 
         return new ResponseEntity<>(energyStore, HttpStatus.OK);
