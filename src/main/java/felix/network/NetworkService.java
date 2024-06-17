@@ -6,8 +6,6 @@ import felix.store.EnergyStoreRepository;
 import felix.store.draw.DrawStrategy;
 import felix.store.draw.NegativeDrawException;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +24,6 @@ public class NetworkService {
     @Autowired
     private final Map<String, DrawStrategy> drawStrategies = new HashMap<>();
 
-    Logger logger = LoggerFactory.getLogger(NetworkController.class);
-
-    String networkNotFoundMessage = "Couldn't find Network with ID: ";
-
     private Network findNetwork(Long networkId) {
         return networkRepository.findById(networkId).orElseThrow(() -> new NetworkNotFoundException(networkId));
     }
@@ -45,9 +39,7 @@ public class NetworkService {
     }
 
     public ResponseEntity<EnergyStore> addEnergyStore(Long networkId, Long storeId) {
-        EnergyStore energyStore = energyStoreRepository.findByIdActive(storeId).orElseThrow(() -> {
-            return new EnergyStoreNotFoundException(storeId);
-        });
+        EnergyStore energyStore = energyStoreRepository.findByIdActive(storeId).orElseThrow(() -> new EnergyStoreNotFoundException(storeId));
         Network network = findNetwork(networkId);
         energyStore.setNetwork(network);
 

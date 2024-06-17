@@ -6,8 +6,7 @@ import felix.store.draw.DrawBelowZeroException;
 import felix.store.draw.NegativeDrawException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,20 +16,19 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/network")
 @RequiredArgsConstructor
+@Slf4j
 public class NetworkController {
     private final NetworkService networkService;
 
-    Logger logger = LoggerFactory.getLogger(NetworkController.class);
-
     @ExceptionHandler({NetworkNotFoundException.class, EnergyStoreNotFoundException.class})
     protected ResponseEntity<String> handleNotFound(RuntimeException e) {
-        logger.error(e.getMessage());
+        log.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({NegativeDrawException.class, DrawBelowZeroException.class, DeleteStoreFromNetworkMismatch.class})
     protected ResponseEntity<String> handleBadRequest(RuntimeException e) {
-        logger.error(e.getMessage());
+        log.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

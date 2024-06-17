@@ -1,11 +1,9 @@
 package felix.store;
 
-import felix.network.NetworkController;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,26 +11,25 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/energyStore")
 @RequiredArgsConstructor
+@Slf4j
 public class EnergyStoreController {
     private final EnergyStoreService energyStoreService;
 
-    Logger logger = LoggerFactory.getLogger(NetworkController.class);
-
     @ExceptionHandler({EntityNotFoundException.class, EnergyStoreNotFoundException.class})
     protected ResponseEntity<String> handleNotFound(RuntimeException e) {
-        logger.error(e.getMessage());
+        log.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({NegativeChangeException.class, MaxCapacityExceededException.class})
     protected ResponseEntity<String> handleBadRequest(RuntimeException e) {
-        logger.error(e.getMessage());
+        log.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({NegativeCapacityException.class})
     protected ResponseEntity<String> handleNegativeCapacity(NegativeCapacityException e) {
-        logger.error(e.getMessage());
+        log.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
