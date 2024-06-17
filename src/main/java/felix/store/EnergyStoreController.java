@@ -53,7 +53,7 @@ public class EnergyStoreController {
     }
 
     @PostMapping
-    public ResponseEntity<EnergyStore> addEnergyStore(@Valid @RequestBody NewEnergyStoreWithoutNetwork newEnergyStore) {
+    public ResponseEntity<EnergyStore> addEnergyStore(@Valid @RequestBody NewEnergyStore newEnergyStore) {
         EnergyStore energyStore = energyStoreService.addEnergyStore(newEnergyStore);
         return new ResponseEntity<>(energyStore, HttpStatus.CREATED);
     }

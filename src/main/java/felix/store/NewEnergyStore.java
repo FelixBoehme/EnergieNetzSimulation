@@ -28,7 +28,15 @@ public class NewEnergyStore {
         return maxCapacity >= currentCapacity;
     }
 
+    public EnergyStore toEnergyStore() {
+        return new EnergyStore(type, maxCapacity, currentCapacity, location, null);
+    }
+
     public EnergyStore toEnergyStore(Network network) {
         return new EnergyStore(type, maxCapacity, currentCapacity, location, network);
+    }
+
+    public Object getType() {
+        return type;
     }
 }

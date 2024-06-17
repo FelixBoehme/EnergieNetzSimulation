@@ -104,7 +104,7 @@ public class EnergyStoreServiceTest {
     public void ensureNewStoreIsSaved() {
         NetworkRepository networkRepository = mock(NetworkRepository.class);
         EnergyStoreRepository energyStoreRepository = Mockito.mock(EnergyStoreRepository.class);
-        NewEnergyStoreWithoutNetwork newEnergyStore = Mockito.mock(NewEnergyStoreWithoutNetwork.class);
+        NewEnergyStore newEnergyStore = Mockito.mock(NewEnergyStore.class);
 
         EnergyStoreService energyStoreService = new EnergyStoreService(networkRepository, energyStoreRepository);
         energyStoreService.addEnergyStore(newEnergyStore);

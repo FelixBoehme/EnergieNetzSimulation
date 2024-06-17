@@ -29,7 +29,7 @@ public class EnergyStoreControllerTest {
     private EnergyStoreService energyStoreService;
 
     @Captor
-    private ArgumentCaptor<NewEnergyStoreWithoutNetwork> energyStoreArgumentCaptor;
+    private ArgumentCaptor<NewEnergyStore> energyStoreArgumentCaptor;
 
     @Test
     public void addEnergyStoreTest() throws Exception {

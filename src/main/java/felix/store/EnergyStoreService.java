@@ -40,7 +40,7 @@ public class EnergyStoreService {
         return energyStoreRepository.save(energyStore);
     }
 
-    public EnergyStore addEnergyStore(NewEnergyStoreWithoutNetwork newEnergyStore) {
+    public EnergyStore addEnergyStore(NewEnergyStore newEnergyStore) {
         EnergyStore energyStore = newEnergyStore.toEnergyStore();
         return energyStoreRepository.save(energyStore);
     }
