@@ -15,7 +15,7 @@ Current features:
 
 ## 💻 Running locally
 Start your Keycloak Server on port `8081` and create a new Realm using the `keycloakRealm.json` file.
-This creates the new Realm _NetzSimulation_  with an admin role.
+This creates the new Realm _NetzSimulation_  with an _admin_ role.
 
 Create a new user and assign them the `admin` role.
 
