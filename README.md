@@ -1,4 +1,4 @@
-# Netzsimulation
+# ⚡ Netzsimulation
 A Spring Application for simulating an electricity grid consisting of energy stores.
 
 Current features:
