@@ -11,12 +11,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenAPISecurityConfig {
 
+    private static final String OAUTH_SCHEME_NAME = "Login";
     @Value("${keycloak.auth-server-url}")
     String authServerUrl;
     @Value("${keycloak.realm}")
     String realm;
-
-    private static final String OAUTH_SCHEME_NAME = "Login";
 
     @Bean
     public OpenAPI openAPI() {
