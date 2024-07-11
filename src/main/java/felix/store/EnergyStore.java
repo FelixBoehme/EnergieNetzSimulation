@@ -3,7 +3,8 @@ package felix.store;
 import felix.network.Network;
 import jakarta.persistence.*;
 
-// TODO: separate class for outputting values
+// TODO: separate class for outputting values?
+// TODO: use lombok getters/setters
 
 @Entity
 public class EnergyStore {
@@ -39,6 +40,18 @@ public class EnergyStore {
         this.currentCapacity = currentCapacity;
         this.location = location;
         this.network = network;
+    }
+
+    public EnergyStoreDTO toDTO() {
+        return new EnergyStoreDTO(
+                id,
+                type,
+                currentCapacity,
+                maxCapacity,
+                location,
+                network == null ? null : network.getId(),
+                network == null ? null : network.getName()
+        );
     }
 
     public Long getId() {

@@ -1,6 +1,7 @@
 package felix.network;
 
 import felix.store.EnergyStore;
+import felix.store.EnergyStoreDTO;
 import felix.store.EnergyStoreNotFoundException;
 import felix.store.draw.DrawBelowZeroException;
 import felix.store.draw.NegativeDrawException;
@@ -11,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/network")
@@ -43,13 +44,8 @@ public class NetworkController {
         return networkService.getAllNetworks();
     }
 
-    @GetMapping("{networkId}/capacity")
-    public Map<String, Double> getCapacity(@PathVariable("networkId") Long networkId) {
-        return networkService.getCapacity(networkId);
-    }
-
     @GetMapping("{networkId}/stores")
-    public Iterable<EnergyStore> getStores(@PathVariable("networkId") Long networkId) {
+    public List<EnergyStoreDTO> getStores(@PathVariable("networkId") Long networkId) {
         return networkService.getStores(networkId);
     }
 
@@ -67,7 +63,7 @@ public class NetworkController {
         return new ResponseEntity<>(energyStore, HttpStatus.OK);
     }
 
-    @PutMapping("{networkId}/capacity/{amount}") // maybe get because you get energy, but put is the correct action?
+    @PutMapping("{networkId}/capacity/{amount}")
     public Float drawCapacity(@PathVariable("networkId") Long networkId, @PathVariable("amount") Float amount) {
         return networkService.drawCapacity(networkId, amount, "fairDraw");
     }

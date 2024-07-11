@@ -1,21 +1,24 @@
 package felix.store.draw;
 
+import felix.network.Network;
+import felix.network.NetworkNotFoundException;
+import felix.network.NetworkRepository;
 import felix.store.EnergyStore;
 import felix.store.EnergyStoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
 public class FairDraw implements DrawStrategy {
     private final EnergyStoreRepository energyStoreRepository;
+    private final NetworkRepository networkRepository;
 
     public Float draw(Float amount, Long networkId) {
-        Map<String, Double> networkCapacity = energyStoreRepository.getCapacity(networkId);
-        float networkCurrentCapacity = networkCapacity.get("currentCapacity").floatValue();
+        Network network = networkRepository.findById(networkId).orElseThrow(() -> new NetworkNotFoundException(networkId));
+        float networkCurrentCapacity = network.getCurrentCapacity();
 
         if (amount > networkCurrentCapacity) {
             throw new DrawBelowZeroException(amount, networkId, networkCurrentCapacity);
@@ -23,7 +26,7 @@ public class FairDraw implements DrawStrategy {
 
         List<EnergyStore> energyStores = energyStoreRepository.findByNetworkAscPercentage(networkId);
 
-        float networkMaxCapacity = networkCapacity.get("maxCapacity").floatValue();
+        float networkMaxCapacity = network.getMaxCapacity();
         float targetPercentage = (networkCurrentCapacity - amount) / networkMaxCapacity;
 
         for (EnergyStore energyStore : energyStores) {
@@ -38,6 +41,7 @@ public class FairDraw implements DrawStrategy {
         }
 
         energyStoreRepository.saveAll(energyStores);
+        networkRepository.updateCapacity(networkId, -amount, 0F);
 
         return networkCurrentCapacity - amount;
     }

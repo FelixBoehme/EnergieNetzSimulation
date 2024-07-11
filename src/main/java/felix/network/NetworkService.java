@@ -1,6 +1,7 @@
 package felix.network;
 
 import felix.store.EnergyStore;
+import felix.store.EnergyStoreDTO;
 import felix.store.EnergyStoreNotFoundException;
 import felix.store.EnergyStoreRepository;
 import felix.store.draw.DrawStrategy;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -51,17 +53,15 @@ public class NetworkService {
 
         energyStore.deleteFromNetwork();
 
+        Float currentCapacity = energyStore.getCurrentCapacity();
+        Float maxCapacity = energyStore.getMaxCapacity();
+        networkRepository.updateCapacity(networkId, -currentCapacity, -maxCapacity);
+
         return energyStoreRepository.save(energyStore);
     }
 
     public Iterable<Network> getAllNetworks() {
         return networkRepository.findAll();
-    }
-
-    public Map<String, Double> getCapacity(Long networkId) {
-        findNetwork(networkId); // TODO: maybe only use one query and handle errors differently
-
-        return energyStoreRepository.getCapacity(networkId);
     }
 
     public Float drawCapacity(Long networkId, Float amount, String drawStrategy) {
@@ -74,9 +74,9 @@ public class NetworkService {
         return drawStrategies.get(drawStrategy).draw(amount, networkId);
     }
 
-    public Iterable<EnergyStore> getStores(Long networkId) {
+    public List<EnergyStoreDTO> getStores(Long networkId) {
         findNetwork(networkId);
 
-        return energyStoreRepository.findByNetwork(networkId);
+        return energyStoreRepository.findByNetwork(networkId).stream().map(EnergyStore::toDTO).toList();
     }
 }

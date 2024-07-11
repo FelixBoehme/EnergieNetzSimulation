@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/energyStore")
 @RequiredArgsConstructor
@@ -42,36 +44,37 @@ public class EnergyStoreController {
 
     @GetMapping("active")
     @ResponseBody
-    public Iterable<EnergyStore> getAllEnergyStores() {
+    public List<EnergyStoreDTO> getAllEnergyStores() {
         return energyStoreService.getActiveEnergyStores();
     }
 
     @GetMapping("unassigned")
     @ResponseBody
-    public Iterable<EnergyStore> getUnassignedEnergyStores() {
+    public List<EnergyStoreDTO> getUnassignedEnergyStores() {
         return energyStoreService.getUnassignedEnergyStores();
     }
 
     @PostMapping
-    public ResponseEntity<EnergyStore> addEnergyStore(@Valid @RequestBody NewEnergyStore newEnergyStore) {
-        EnergyStore energyStore = energyStoreService.addEnergyStore(newEnergyStore);
-        return new ResponseEntity<>(energyStore, HttpStatus.CREATED);
+    public ResponseEntity<EnergyStoreDTO> addEnergyStore(@Valid @RequestBody NewEnergyStore newEnergyStore) {
+        EnergyStoreDTO energyStoreDTO = energyStoreService.addEnergyStore(newEnergyStore).toDTO();
+        return new ResponseEntity<>(energyStoreDTO, HttpStatus.CREATED);
     }
 
     @PostMapping("network/{networkId}")
-    public ResponseEntity<EnergyStore> addEnergyStoreWithNetwork(@Valid @RequestBody NewEnergyStore newEnergyStore, @PathVariable("networkId") Long networkId) {
-        return energyStoreService.addEnergyStoreWithNetwork(newEnergyStore, networkId);
+    public ResponseEntity<EnergyStoreDTO> addEnergyStoreWithNetwork(@Valid @RequestBody NewEnergyStore newEnergyStore, @PathVariable("networkId") Long networkId) {
+        EnergyStoreDTO energyStoreDTO = energyStoreService.addEnergyStoreWithNetwork(newEnergyStore, networkId).toDTO();
+        return new ResponseEntity<>(energyStoreDTO, HttpStatus.OK);
     }
 
     @PutMapping("{energyStoreId}/capacity/{change}")
-    public ResponseEntity<EnergyStore> updateCurrentCapacity(@PathVariable("energyStoreId") Long energyStoreId, @PathVariable("change") Float change) {
-        EnergyStore energyStore = energyStoreService.updateCurrentCapacity(energyStoreId, change);
-        return new ResponseEntity<>(energyStore, HttpStatus.OK);
+    public ResponseEntity<EnergyStoreDTO> updateCurrentCapacity(@PathVariable("energyStoreId") Long energyStoreId, @PathVariable("change") Float change) {
+        EnergyStoreDTO energyStoreDTO = energyStoreService.updateCurrentCapacity(energyStoreId, change).toDTO();
+        return new ResponseEntity<>(energyStoreDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("{energyStoreId}")
-    public ResponseEntity<EnergyStore> softDeleteEnergyStore(@PathVariable("energyStoreId") Long energyStoreId) {
-        EnergyStore energyStore = energyStoreService.softDeleteEnergyStore(energyStoreId);
-        return new ResponseEntity<>(energyStore, HttpStatus.OK);
+    public ResponseEntity<EnergyStoreDTO> softDeleteEnergyStore(@PathVariable("energyStoreId") Long energyStoreId) {
+        EnergyStoreDTO energyStoreDTO = energyStoreService.softDeleteEnergyStore(energyStoreId).toDTO();
+        return new ResponseEntity<>(energyStoreDTO, HttpStatus.OK);
     }
 }
