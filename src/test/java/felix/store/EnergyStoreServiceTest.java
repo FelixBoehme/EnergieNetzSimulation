@@ -105,6 +105,10 @@ public class EnergyStoreServiceTest {
         NetworkRepository networkRepository = mock(NetworkRepository.class);
         EnergyStoreRepository energyStoreRepository = Mockito.mock(EnergyStoreRepository.class);
         NewEnergyStore newEnergyStore = Mockito.mock(NewEnergyStore.class);
+        EnergyStore energyStore = Mockito.mock(EnergyStore.class);
+        Network network = Mockito.mock(Network.class);
+        when(newEnergyStore.toEnergyStore()).thenReturn(energyStore);
+        when(energyStore.getNetwork()).thenReturn(network);
 
         EnergyStoreService energyStoreService = new EnergyStoreService(networkRepository, energyStoreRepository);
         energyStoreService.addEnergyStore(newEnergyStore);
@@ -131,12 +135,109 @@ public class EnergyStoreServiceTest {
         NetworkRepository networkRepository = mock(NetworkRepository.class);
         EnergyStoreRepository energyStoreRepository = Mockito.mock(EnergyStoreRepository.class);
         NewEnergyStore newEnergyStore = Mockito.mock(NewEnergyStore.class);
+        EnergyStore energyStore = Mockito.mock(EnergyStore.class);
         Network network = Mockito.mock(Network.class);
         when(networkRepository.findById(1L)).thenReturn(Optional.ofNullable(network));
+        when(newEnergyStore.toEnergyStore(network)).thenReturn(energyStore);
 
         EnergyStoreService energyStoreService = new EnergyStoreService(networkRepository, energyStoreRepository);
         energyStoreService.addEnergyStoreWithNetwork(newEnergyStore, 1L);
 
         verify(energyStoreRepository, times(1)).save(any());
+    }
+
+    @Test
+    public void ensureNetworkCapacityUpdatedByUpdateCurrentCapacityChange() {
+        NetworkRepository networkRepository = mock(NetworkRepository.class);
+        EnergyStoreRepository energyStoreRepository = Mockito.mock(EnergyStoreRepository.class);
+        EnergyStore energyStore = Mockito.mock(EnergyStore.class);
+        Network network = Mockito.mock(Network.class);
+        Long networkId = 1L;
+        Float change = 500F;
+        when(energyStoreRepository.findByIdActive(storeId)).thenReturn(Optional.ofNullable(energyStore));
+        when(energyStore.getNetwork()).thenReturn(network);
+        when(network.getId()).thenReturn(networkId);
+
+        EnergyStoreService energyStoreService = new EnergyStoreService(networkRepository, energyStoreRepository);
+        energyStoreService.updateCurrentCapacity(storeId, change);
+
+        verify(networkRepository, times(1)).updateCapacity(networkId, change, 0F);
+    }
+
+    @Test
+    public void ensureNetworkCapacityUpdatedBySoftDeleteEnergyStoreWhenInNetwork() {
+        NetworkRepository networkRepository = mock(NetworkRepository.class);
+        EnergyStoreRepository energyStoreRepository = Mockito.mock(EnergyStoreRepository.class);
+        EnergyStore energyStore = Mockito.mock(EnergyStore.class);
+        Network network = Mockito.mock(Network.class);
+        Long networkId = 1L;
+        Float currentCapacity = 500F;
+        Float maxCapacity = 500F;
+        when(energyStoreRepository.findByIdActive(storeId)).thenReturn(Optional.ofNullable(energyStore));
+        when(energyStore.getNetwork()).thenReturn(network);
+        when(network.getId()).thenReturn(networkId);
+        when(energyStore.getCurrentCapacity()).thenReturn(currentCapacity);
+        when(energyStore.getMaxCapacity()).thenReturn(maxCapacity);
+
+        EnergyStoreService energyStoreService = new EnergyStoreService(networkRepository, energyStoreRepository);
+        energyStoreService.softDeleteEnergyStore(storeId);
+
+        verify(networkRepository, times(1)).updateCapacity(networkId, -currentCapacity, -maxCapacity);
+    }
+
+    @Test
+    public void ensureNetworkCapacityNotUpdatedBySoftDeleteEnergyStoreWhenNotInNetwork() {
+        NetworkRepository networkRepository = mock(NetworkRepository.class);
+        EnergyStoreRepository energyStoreRepository = Mockito.mock(EnergyStoreRepository.class);
+        EnergyStore energyStore = Mockito.mock(EnergyStore.class);
+        when(energyStoreRepository.findByIdActive(storeId)).thenReturn(Optional.ofNullable(energyStore));
+
+        EnergyStoreService energyStoreService = new EnergyStoreService(networkRepository, energyStoreRepository);
+        energyStoreService.softDeleteEnergyStore(storeId);
+
+        verify(networkRepository, times(0)).updateCapacity(any(), any(), any());
+    }
+
+    @Test
+    void ensureNetworkCapacityUpdatedByAddEnergyStore() {
+        NetworkRepository networkRepository = mock(NetworkRepository.class);
+        EnergyStoreRepository energyStoreRepository = Mockito.mock(EnergyStoreRepository.class);
+        NewEnergyStore newEnergyStore = Mockito.mock(NewEnergyStore.class);
+        EnergyStore energyStore = Mockito.mock(EnergyStore.class);
+        Network network = Mockito.mock(Network.class);
+        Long networkId = 1L;
+        Float currentCapacity = 500F;
+        Float maxCapacity = 500F;
+        when(newEnergyStore.toEnergyStore()).thenReturn(energyStore);
+        when(energyStore.getNetwork()).thenReturn(network);
+        when(network.getId()).thenReturn(networkId);
+        when(energyStore.getCurrentCapacity()).thenReturn(currentCapacity);
+        when(energyStore.getMaxCapacity()).thenReturn(maxCapacity);
+
+        EnergyStoreService energyStoreService = new EnergyStoreService(networkRepository, energyStoreRepository);
+        energyStoreService.addEnergyStore(newEnergyStore);
+
+        verify(networkRepository, times(1)).updateCapacity(networkId, currentCapacity, maxCapacity);
+    }
+
+    @Test
+    void ensureNetworkCapacityUpdatedByAddEnergyStoreWithNetwork() {
+        NetworkRepository networkRepository = mock(NetworkRepository.class);
+        EnergyStoreRepository energyStoreRepository = Mockito.mock(EnergyStoreRepository.class);
+        NewEnergyStore newEnergyStore = Mockito.mock(NewEnergyStore.class);
+        EnergyStore energyStore = Mockito.mock(EnergyStore.class);
+        Network network = Mockito.mock(Network.class);
+        Long networkId = 1L;
+        Float currentCapacity = 500F;
+        Float maxCapacity = 500F;
+        when(networkRepository.findById(networkId)).thenReturn(Optional.ofNullable(network));
+        when(newEnergyStore.toEnergyStore(network)).thenReturn(energyStore);
+        when(energyStore.getCurrentCapacity()).thenReturn(currentCapacity);
+        when(energyStore.getMaxCapacity()).thenReturn(maxCapacity);
+
+        EnergyStoreService energyStoreService = new EnergyStoreService(networkRepository, energyStoreRepository);
+        energyStoreService.addEnergyStoreWithNetwork(newEnergyStore, networkId);
+
+        verify(networkRepository, times(1)).updateCapacity(networkId, currentCapacity, maxCapacity);
     }
 }
