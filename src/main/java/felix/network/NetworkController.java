@@ -26,7 +26,7 @@ public class NetworkController {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({NegativeDrawException.class, DrawBelowZeroException.class, DeleteStoreFromNetworkMismatch.class})
+    @ExceptionHandler({NegativeDrawException.class, DrawBelowZeroException.class, DeleteStoreFromNetworkMismatchException.class})
     protected ResponseEntity<String> handleBadRequest(RuntimeException e) {
         log.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

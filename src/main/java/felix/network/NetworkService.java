@@ -47,7 +47,7 @@ public class NetworkService {
         Long storeNetworkId = energyStore.getNetwork().getId();
 
         if (!Objects.equals(networkId, storeNetworkId))
-            throw new DeleteStoreFromNetworkMismatch(storeNetworkId, networkId);
+            throw new DeleteStoreFromNetworkMismatchException(storeNetworkId, networkId);
 
         energyStore.deleteFromNetwork();
 
