@@ -29,6 +29,12 @@ public class NetworkService {
     }
 
     public void addNetwork(Network network) {
+        String networkName = network.getName();
+        Boolean sameNameExists = networkRepository.existsByName(networkName);
+
+        if (sameNameExists)
+            throw new NetworkAlreadyExistsException(networkName);
+
         networkRepository.save(network);
     }
 

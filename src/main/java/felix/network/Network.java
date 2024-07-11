@@ -18,6 +18,7 @@ public class Network {
 
     @Getter
     @NotNull
+    @Column(unique = true)
     private String name;
 
     @Getter
