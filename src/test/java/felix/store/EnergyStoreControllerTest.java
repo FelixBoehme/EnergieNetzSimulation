@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -17,9 +18,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@WebMvcTest(value = EnergyStoreController.class)
+@WebMvcTest(value = EnergyStoreController.class, excludeAutoConfiguration = OAuth2ClientAutoConfiguration.class)
 @AutoConfigureMockMvc(addFilters = false)
-@EnableWebSecurity
 public class EnergyStoreControllerTest {
     @Autowired
     private MockMvc mockMvc;
