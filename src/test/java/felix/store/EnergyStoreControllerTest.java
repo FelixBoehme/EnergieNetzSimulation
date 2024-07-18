@@ -12,8 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,9 +32,17 @@ public class EnergyStoreControllerTest {
 
     @Test
     public void addEnergyStoreTest() throws Exception {
+        EnergyStore energyStore = mock(EnergyStore.class);
+        when(energyStoreService.addEnergyStore(any())).thenReturn(energyStore);
+
         mockMvc.perform(post("/api/energyStore").contentType(MediaType.APPLICATION_JSON).content("""
-                { "type": "SOLAR" }
-                """)).andExpect(status().isOk());
+                {
+                 "type": "SOLAR",
+                 "currentCapacity": "0",
+                 "maxCapacity": "0",
+                 "location": ""
+                }
+                """)).andExpect(status().isCreated());
         verify(energyStoreService, times(1)).addEnergyStore(energyStoreArgumentCaptor.capture());
         assertThat(energyStoreArgumentCaptor.getValue().getType().toString()).isEqualTo("SOLAR");
     }
