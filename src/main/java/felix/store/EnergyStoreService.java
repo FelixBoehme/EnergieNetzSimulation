@@ -53,12 +53,6 @@ public class EnergyStoreService {
 
     public EnergyStore addEnergyStore(NewEnergyStore newEnergyStore) {
         EnergyStore energyStore = newEnergyStore.toEnergyStore();
-
-        Long networkId = energyStore.getNetwork().getId();
-        Float currentCapacity = energyStore.getCurrentCapacity();
-        Float maxCapacity = energyStore.getMaxCapacity();
-        networkRepository.updateCapacity(networkId, currentCapacity, maxCapacity);
-
         return energyStoreRepository.save(energyStore);
     }
 
