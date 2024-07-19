@@ -66,7 +66,7 @@ public class EnergyStoreService {
         Float currentCapacity = energyStore.getCurrentCapacity();
         Float maxCapacity = energyStore.getMaxCapacity();
         networkRepository.updateCapacity(networkId, currentCapacity, maxCapacity);
-        networkRepository.increaseTotalStores(energyStore.getNetwork().getId());
+        networkRepository.increaseTotalStores(networkId);
 
         return energyStore;
     }
