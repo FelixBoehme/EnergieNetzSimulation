@@ -232,4 +232,55 @@ public class EnergyStoreServiceTest {
 
         verify(networkRepository, times(1)).updateCapacity(networkId, currentCapacity, maxCapacity);
     }
+
+    @Test
+    void ensureTotalStoresDecreasedWhenSoftDeletingWithNetwork() {
+        NetworkRepository networkRepository = mock(NetworkRepository.class);
+        EnergyStoreRepository energyStoreRepository = Mockito.mock(EnergyStoreRepository.class);
+        EnergyStore energyStore = Mockito.mock(EnergyStore.class);
+        Network network = Mockito.mock(Network.class);
+        Long networkId = 1L;
+        when(energyStoreRepository.findByIdActive(storeId)).thenReturn(Optional.ofNullable(energyStore));
+        when(energyStore.getNetwork()).thenReturn(network);
+        when(network.getId()).thenReturn(networkId);
+
+        EnergyStoreService energyStoreService = new EnergyStoreService(networkRepository, energyStoreRepository);
+        energyStoreService.softDeleteEnergyStore(storeId);
+
+        verify(networkRepository, times(1)).decreaseTotalStores(networkId);
+        verify(networkRepository, times(0)).increaseTotalStores(networkId);
+    }
+
+    @Test
+    void ensureTotalStoresNotDecreasedWhenSoftDeletingWithoutNetwork() {
+        NetworkRepository networkRepository = mock(NetworkRepository.class);
+        EnergyStoreRepository energyStoreRepository = Mockito.mock(EnergyStoreRepository.class);
+        EnergyStore energyStore = Mockito.mock(EnergyStore.class);
+        when(energyStoreRepository.findByIdActive(storeId)).thenReturn(Optional.ofNullable(energyStore));
+
+        EnergyStoreService energyStoreService = new EnergyStoreService(networkRepository, energyStoreRepository);
+        energyStoreService.softDeleteEnergyStore(storeId);
+
+        verify(networkRepository, times(0)).decreaseTotalStores(anyLong());
+        verify(networkRepository, times(0)).increaseTotalStores(anyLong());
+    }
+
+    @Test
+    void ensureTotalStoresIncreasedWhenAddingStoreWithNetwork() {
+        NetworkRepository networkRepository = mock(NetworkRepository.class);
+        EnergyStoreRepository energyStoreRepository = Mockito.mock(EnergyStoreRepository.class);
+        NewEnergyStore newEnergyStore = Mockito.mock(NewEnergyStore.class);
+        EnergyStore energyStore = Mockito.mock(EnergyStore.class);
+        Network network = Mockito.mock(Network.class);
+        Long networkId = 1L;
+        when(networkRepository.findById(networkId)).thenReturn(Optional.ofNullable(network));
+        when(network.getId()).thenReturn(networkId);
+        when(newEnergyStore.toEnergyStore(network)).thenReturn(energyStore);
+
+        EnergyStoreService energyStoreService = new EnergyStoreService(networkRepository, energyStoreRepository);
+        energyStoreService.addEnergyStoreWithNetwork(newEnergyStore, networkId);
+
+        verify(networkRepository, times(1)).increaseTotalStores(networkId);
+        verify(networkRepository, times(0)).decreaseTotalStores(networkId);
+    }
 }
