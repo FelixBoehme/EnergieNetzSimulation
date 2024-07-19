@@ -29,7 +29,7 @@ public class NetworkController {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({NetworkAlreadyExistsException.class, NegativeDrawException.class, DrawBelowZeroException.class, DeleteStoreFromNetworkMismatchException.class})
+    @ExceptionHandler({NetworkAlreadyExistsException.class, NegativeDrawException.class, DrawBelowZeroException.class, DeleteStoreFromNetworkMismatchException.class, StoreNotInNetworkException.class})
     protected ResponseEntity<String> handleBadRequest(RuntimeException e) {
         log.error(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

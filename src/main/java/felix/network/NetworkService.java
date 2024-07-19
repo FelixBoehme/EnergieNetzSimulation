@@ -52,7 +52,12 @@ public class NetworkService {
 
     public EnergyStore deleteStoreFromNetwork(Long networkId, Long storeId) {
         EnergyStore energyStore = energyStoreRepository.findByIdActive(storeId).orElseThrow(() -> new EnergyStoreNotFoundException(storeId));
-        Long storeNetworkId = energyStore.getNetwork().getId();
+        Network network = energyStore.getNetwork();
+
+        if (network == null)
+            throw new StoreNotInNetworkException(networkId);
+
+        Long storeNetworkId = network.getId();
 
         if (!Objects.equals(networkId, storeNetworkId))
             throw new DeleteStoreFromNetworkMismatchException(storeNetworkId, networkId);
