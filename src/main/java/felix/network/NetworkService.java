@@ -45,6 +45,8 @@ public class NetworkService {
         Network network = findNetwork(networkId);
         energyStore.setNetwork(network);
 
+        networkRepository.increaseTotalStores(networkId);
+
         return energyStoreRepository.save(energyStore);
     }
 
