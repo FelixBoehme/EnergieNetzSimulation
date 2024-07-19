@@ -39,6 +39,7 @@ public class EnergyStoreService {
 
     public EnergyStore softDeleteEnergyStore(Long storeId) {
         EnergyStore energyStore = energyStoreRepository.findByIdActive(storeId).orElseThrow(() -> new EnergyStoreNotFoundException(storeId));
+
         energyStore.setDeleted(true);
 
         if (energyStore.getNetwork() != null) {
@@ -46,6 +47,7 @@ public class EnergyStoreService {
             Float currentCapacity = energyStore.getCurrentCapacity();
             Float maxCapacity = energyStore.getMaxCapacity();
             networkRepository.updateCapacity(networkId, -currentCapacity, -maxCapacity);
+            networkRepository.decreaseTotalStores(energyStore.getNetwork().getId());
         }
 
         return energyStoreRepository.save(energyStore);
@@ -64,6 +66,7 @@ public class EnergyStoreService {
         Float currentCapacity = energyStore.getCurrentCapacity();
         Float maxCapacity = energyStore.getMaxCapacity();
         networkRepository.updateCapacity(networkId, currentCapacity, maxCapacity);
+        networkRepository.increaseTotalStores(energyStore.getNetwork().getId());
 
         return energyStore;
     }

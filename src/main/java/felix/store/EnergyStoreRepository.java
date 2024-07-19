@@ -1,5 +1,8 @@
 package felix.store;
 
+import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -21,7 +24,7 @@ public interface EnergyStoreRepository extends CrudRepository<EnergyStore, Long>
     List<EnergyStore> findByNetworkAscPercentage(Long networkId);
 
     @Query("SELECT e FROM EnergyStore e WHERE e.network.id = :networkId AND e.deleted = FALSE")
-    List<EnergyStore> findByNetwork(Long networkId);
+    List<EnergyStore> findByNetwork(Long networkId, Pageable pageable);
 
     @Query("SELECT e FROM EnergyStore e WHERE e.network IS NULL AND e.deleted = FALSE")
     List<EnergyStore> findUnassigned();

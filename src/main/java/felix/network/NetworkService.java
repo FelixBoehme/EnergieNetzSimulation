@@ -1,13 +1,11 @@
 package felix.network;
 
-import felix.store.EnergyStore;
-import felix.store.EnergyStoreDTO;
-import felix.store.EnergyStoreNotFoundException;
-import felix.store.EnergyStoreRepository;
+import felix.store.*;
 import felix.store.draw.DrawStrategy;
 import felix.store.draw.NegativeDrawException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -67,6 +65,7 @@ public class NetworkService {
         Float currentCapacity = energyStore.getCurrentCapacity();
         Float maxCapacity = energyStore.getMaxCapacity();
         networkRepository.updateCapacity(networkId, -currentCapacity, -maxCapacity);
+        networkRepository.decreaseTotalStores(networkId);
 
         return energyStoreRepository.save(energyStore);
     }
@@ -85,9 +84,10 @@ public class NetworkService {
         return drawStrategies.get(drawStrategy).draw(amount, networkId);
     }
 
-    public List<EnergyStoreDTO> getStores(Long networkId) {
-        findNetwork(networkId);
+    public EnergyStoreListDTO getStores(Long networkId, Pageable pageable) {
+        Long totalStores = findNetwork(networkId).getTotalStores();
+        List<EnergyStoreDTO> stores = energyStoreRepository.findByNetwork(networkId, pageable).stream().map(EnergyStore::toDTO).toList();
 
-        return energyStoreRepository.findByNetwork(networkId).stream().map(EnergyStore::toDTO).toList();
+        return new EnergyStoreListDTO(totalStores, stores);
     }
 }

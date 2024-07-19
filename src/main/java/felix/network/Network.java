@@ -31,6 +31,9 @@ public class Network {
     @Formula("CASE WHEN max_capacity = 0 THEN 0 ELSE (current_capacity / max_capacity) END")
     private Float percentageCapacity = 0F;
 
+    @Getter
+    private Long totalStores = 0L;
+
     @OneToMany(mappedBy = "network")
     private List<EnergyStore> energyStores;
 

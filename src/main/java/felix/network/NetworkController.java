@@ -1,18 +1,17 @@
 package felix.network;
 
 import felix.store.EnergyStore;
-import felix.store.EnergyStoreDTO;
+import felix.store.EnergyStoreListDTO;
 import felix.store.EnergyStoreNotFoundException;
 import felix.store.draw.DrawBelowZeroException;
 import felix.store.draw.NegativeDrawException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 //TODO: remove inconsistent use of response entities
 
@@ -47,8 +46,8 @@ public class NetworkController {
     }
 
     @GetMapping("{networkId}/stores")
-    public List<EnergyStoreDTO> getStores(@PathVariable("networkId") Long networkId) {
-        return networkService.getStores(networkId);
+    public EnergyStoreListDTO getStores(@PathVariable("networkId") Long networkId, Pageable pageable) {
+        return networkService.getStores(networkId, pageable);
     }
 
     @PostMapping
