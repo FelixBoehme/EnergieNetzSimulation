@@ -1,8 +1,6 @@
 package felix.store;
 
-import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -15,8 +13,10 @@ public interface EnergyStoreRepository extends CrudRepository<EnergyStore, Long>
     Optional<EnergyStore> findByIdActive(Long storeId);
 
     @Query("SELECT e FROM EnergyStore e WHERE e.deleted = FALSE")
-    List<EnergyStore> findAllActive();
+    List<EnergyStore> findAllActive(Pageable pageable);
 
+    @Query("SELECT COUNT(*) FROM EnergyStore e WHERE e.deleted = FALSE")
+    long countActive();
     @Query("SELECT e FROM EnergyStore e JOIN Network n ON e.network.id = :networkId WHERE e.currentCapacity >= 0 AND e.deleted = FALSE ORDER BY e.currentCapacity ASC")
     List<EnergyStore> findByNetworkPositiveCapacity(Long networkId);
 

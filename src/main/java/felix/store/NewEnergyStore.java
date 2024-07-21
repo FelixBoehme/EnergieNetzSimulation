@@ -22,6 +22,7 @@ public class NewEnergyStore {
         this.location = location;
     }
 
+    //TODO: include message in http response
     @AssertTrue(message = "The current capacity can't be greater than the maximum capacity")
     private boolean isCapacityValid() {
         if (maxCapacity == null || currentCapacity == null) return false;

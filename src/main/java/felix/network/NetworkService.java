@@ -6,6 +6,7 @@ import felix.store.draw.NegativeDrawException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -86,9 +87,9 @@ public class NetworkService {
         return drawStrategies.get(drawStrategy).draw(amount, networkId);
     }
 
-    public EnergyStoreListDTO getStores(Long networkId, Pageable pageable) {
+    public EnergyStoreListDTO getStores(Long networkId, Pageable pageable, Specification<EnergyStore> spec) {
         Long totalStores = findNetwork(networkId).getTotalStores();
-        List<EnergyStoreDTO> stores = energyStoreRepository.findByNetwork(networkId, pageable).stream().map(EnergyStore::toDTO).toList();
+        List<EnergyStoreDTO> stores = energyStoreRepository.findAll(spec, pageable).stream().map(EnergyStore::toDTO).toList();
 
         return new EnergyStoreListDTO(totalStores, stores);
     }
