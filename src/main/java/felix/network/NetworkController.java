@@ -1,17 +1,25 @@
 package felix.network;
 
+import felix.filter.SearchFilter;
 import felix.store.EnergyStore;
 import felix.store.EnergyStoreListDTO;
 import felix.store.EnergyStoreNotFoundException;
 import felix.store.draw.DrawBelowZeroException;
 import felix.store.draw.NegativeDrawException;
+import felix.filter.SpecificationBuilder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 //TODO: remove inconsistent use of response entities
 
@@ -46,8 +54,11 @@ public class NetworkController {
     }
 
     @GetMapping("{networkId}/stores")
-    public EnergyStoreListDTO getStores(@PathVariable("networkId") Long networkId, Pageable pageable) {
-        return networkService.getStores(networkId, pageable);
+    public EnergyStoreListDTO getStores(@PathVariable("networkId") Long networkId, Pageable pageable, @RequestParam(value = "search", required = false) String search) {
+        Boolean hasFilter = search != null;
+        SearchFilter<EnergyStore> searchFilter = new SearchFilter<EnergyStore>(search).where("network.id", networkId);
+        Specification<EnergyStore> spec = searchFilter.build();
+        return networkService.getStores(networkId, pageable, spec, hasFilter);
     }
 
     @PostMapping

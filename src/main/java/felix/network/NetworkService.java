@@ -5,7 +5,9 @@ import felix.store.draw.DrawStrategy;
 import felix.store.draw.NegativeDrawException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -87,10 +89,19 @@ public class NetworkService {
         return drawStrategies.get(drawStrategy).draw(amount, networkId);
     }
 
-    public EnergyStoreListDTO getStores(Long networkId, Pageable pageable, Specification<EnergyStore> spec) {
-        Long totalStores = findNetwork(networkId).getTotalStores();
-        List<EnergyStoreDTO> stores = energyStoreRepository.findAll(spec, pageable).stream().map(EnergyStore::toDTO).toList();
+    public EnergyStoreListDTO getStores(Long networkId, Pageable pageable, Specification<EnergyStore> spec, Boolean hasFilters) {
+        Network network = findNetwork(networkId);
 
-        return new EnergyStoreListDTO(totalStores, stores);
+        if (hasFilters) {
+            Page<EnergyStore> page = energyStoreRepository.findAll(spec, pageable);
+            Long totalStores = page.getTotalElements();
+            List<EnergyStoreDTO> stores = page.getContent().stream().map(EnergyStore::toDTO).toList();
+            return new EnergyStoreListDTO(totalStores, stores);
+        } else {
+            Slice<EnergyStore> page = energyStoreRepository.findAll(spec, pageable);
+            Long totalStores = network.getTotalStores();
+            List<EnergyStoreDTO> stores = page.getContent().stream().map(EnergyStore::toDTO).toList();
+            return new EnergyStoreListDTO(totalStores, stores);
+        }
     }
 }

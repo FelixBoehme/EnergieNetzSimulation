@@ -1,10 +1,12 @@
 package felix.store;
 
+import felix.filter.SearchFilter;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,8 +47,10 @@ public class EnergyStoreController {
 
     @GetMapping("active")
     @ResponseBody
-    public EnergyStoreListDTO getAllEnergyStores(Pageable pageable) {
-        return energyStoreService.getActiveEnergyStores(pageable);
+    public EnergyStoreListDTO getAllEnergyStores(Pageable pageable, @RequestParam(value = "search", required = false) String search) {
+        SearchFilter<EnergyStore> searchFilter = new SearchFilter<EnergyStore>(search).where("deleted", false);
+        Specification<EnergyStore> spec = searchFilter.build();
+        return energyStoreService.getActiveEnergyStores(pageable, spec);
     }
 
     @GetMapping("unassigned")

@@ -4,7 +4,9 @@ import felix.network.Network;
 import felix.network.NetworkNotFoundException;
 import felix.network.NetworkRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,11 +21,11 @@ public class EnergyStoreService {
         return energyStoreRepository.findById(storeId).orElseThrow(() -> new EnergyStoreNotFoundException(storeId));
     }
 
-    public EnergyStoreListDTO getActiveEnergyStores(Pageable pageable) {
-        Long totalStores = energyStoreRepository.countActive();
-        List<EnergyStoreDTO> stores = energyStoreRepository.findAllActive(pageable).stream().map(EnergyStore::toDTO).toList();
-
-        return  new EnergyStoreListDTO(totalStores, stores);
+    public EnergyStoreListDTO getActiveEnergyStores(Pageable pageable, Specification<EnergyStore> spec) {
+        Page<EnergyStore> page = energyStoreRepository.findAll(spec, pageable);
+        Long totalStores = page.getTotalElements();
+        List<EnergyStoreDTO> stores = page.getContent().stream().map(EnergyStore::toDTO).toList();
+        return new EnergyStoreListDTO(totalStores, stores);
     }
 
     public EnergyStore updateCurrentCapacity(Long storeId, Float change) {
