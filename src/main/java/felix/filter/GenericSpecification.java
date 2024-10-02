@@ -1,8 +1,13 @@
 package felix.filter;
 
+import felix.store.EnergyStoreType;
 import jakarta.persistence.criteria.*;
 import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @AllArgsConstructor
 public class GenericSpecification<T> implements Specification<T> {
@@ -23,6 +28,17 @@ public class GenericSpecification<T> implements Specification<T> {
         } else if (criteria.getOperation().equalsIgnoreCase(":")) {
             if (propertyPath.getJavaType() == String.class) {
                 return builder.like(builder.lower(propertyPath), "%" + criteria.getValue().toString().toLowerCase() + "%");
+            } else if (criteria.getKey().equalsIgnoreCase("type")) {
+                String value = criteria.getValue().toString();
+
+                if (value.charAt(0) == '[') {
+                    String[] options = value.replaceAll("[\\[\\]]", "").split(",");
+                    List<EnergyStoreType> types = Arrays.stream(options).map(EnergyStoreType::valueOf).toList();
+                    return propertyPath.in(types);
+                }
+
+                EnergyStoreType type = EnergyStoreType.valueOf(criteria.getValue().toString());
+                return builder.equal(propertyPath, type);
             } else {
                 return builder.equal(propertyPath, criteria.getValue());
             }

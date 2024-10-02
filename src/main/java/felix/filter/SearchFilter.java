@@ -2,6 +2,7 @@ package felix.filter;
 
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,12 +12,13 @@ import java.util.regex.Pattern;
 public class SearchFilter<T> {
     private final SpecificationBuilder<T> builder;
     private final Matcher matcher;
+    private final HashMap<String, Enum> enumMap = new HashMap<>();
 
     public SearchFilter(String search, String[] protectedFields) {
         Set<String> protectedFieldsSet = new HashSet<String>(List.of(protectedFields));
         this.builder = new SpecificationBuilder<>(protectedFieldsSet);
 
-        Pattern PATTERN = Pattern.compile("(\\w+(?:\\.\\w+)*?)([:<>])(\\w+?),");
+        Pattern PATTERN = Pattern.compile("(\\w+(?:\\.\\w+)*?)([:<>])(\\[.*?\\]|\\w+?),");
         this.matcher = PATTERN.matcher(search + ",");
     }
 
@@ -26,6 +28,11 @@ public class SearchFilter<T> {
 
     public SearchFilter<T> where(String key, Object value) {
         builder.where(key, value);
+        return this;
+    }
+
+    public SearchFilter<T> where(String key, String operation, Object value) {
+        builder.where(key, operation, value);
         return this;
     }
 
