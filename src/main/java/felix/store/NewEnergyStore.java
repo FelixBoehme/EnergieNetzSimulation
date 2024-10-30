@@ -3,7 +3,10 @@ package felix.store;
 import felix.network.Network;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
 public class NewEnergyStore {
     @NotNull
     private final EnergyStoreType type;
@@ -35,9 +38,5 @@ public class NewEnergyStore {
 
     public EnergyStore toEnergyStore(Network network) {
         return new EnergyStore(type, maxCapacity, currentCapacity, location, network);
-    }
-
-    public Object getType() {
-        return type;
     }
 }

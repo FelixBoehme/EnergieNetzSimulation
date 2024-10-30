@@ -80,4 +80,22 @@ public class EnergyStoreService {
     public List<EnergyStoreDTO> getUnassignedEnergyStores() {
         return energyStoreRepository.findUnassigned().stream().map(EnergyStore::toDTO).toList();
     }
+
+    public EnergyStore editEnergyStore(NewEnergyStore newEnergyStore, Long storeId) {
+        EnergyStore energyStore = energyStoreRepository.findByIdActive(storeId).orElseThrow(() -> new EnergyStoreNotFoundException(storeId));
+        energyStore.setType(newEnergyStore.getType());
+        energyStore.setLocation(newEnergyStore.getLocation());
+
+        Float currentCapacityChange = newEnergyStore.getCurrentCapacity() - energyStore.getCurrentCapacity();
+        Float maxCapacityChange = newEnergyStore.getMaxCapacity() - energyStore.getMaxCapacity();
+
+        energyStore.setMaxCapacity(newEnergyStore.getMaxCapacity());
+        energyStore.setCurrentCapacity(newEnergyStore.getCurrentCapacity());
+
+        Long networkId = energyStore.getNetwork().getId();
+        networkRepository.updateCapacity(networkId, currentCapacityChange, maxCapacityChange);
+
+
+        return energyStoreRepository.save(energyStore);
+    }
 }

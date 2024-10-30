@@ -56,7 +56,7 @@ public class NetworkController {
     @GetMapping("{networkId}/stores")
     public EnergyStoreListDTO getStores(@PathVariable("networkId") Long networkId, Pageable pageable, @RequestParam(value = "search", required = false) String search) {
         Boolean hasFilter = search != null;
-        SearchFilter<EnergyStore> searchFilter = new SearchFilter<EnergyStore>(search).where("network.id", networkId);
+        SearchFilter<EnergyStore> searchFilter = new SearchFilter<EnergyStore>(search).where("network.id", networkId).where("deleted", false);
         Specification<EnergyStore> spec = searchFilter.build();
         return networkService.getStores(networkId, pageable, spec, hasFilter);
     }

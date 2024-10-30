@@ -2,15 +2,19 @@ package felix.store;
 
 import felix.network.Network;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Setter;
 
 // TODO: separate class for outputting values?
 // TODO: use lombok getters/setters
 
 @Entity
+@Setter()
 public class EnergyStore {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Setter(AccessLevel.NONE)
     private Long id;
     private EnergyStoreType type;
     private Float maxCapacity;
@@ -70,10 +74,6 @@ public class EnergyStore {
         return currentCapacity;
     }
 
-    private void setCurrentCapacity(Float newCapacity) {
-        this.currentCapacity = newCapacity;
-    }
-
     public String getLocation() {
         return location;
     }
@@ -82,16 +82,8 @@ public class EnergyStore {
         return deleted;
     }
 
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
-    }
-
     public Network getNetwork() {
         return network;
-    }
-
-    public void setNetwork(Network network) {
-        this.network = network;
     }
 
     public void deleteFromNetwork() {

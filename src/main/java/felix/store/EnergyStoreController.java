@@ -82,4 +82,10 @@ public class EnergyStoreController {
         EnergyStoreDTO energyStoreDTO = energyStoreService.softDeleteEnergyStore(energyStoreId).toDTO();
         return new ResponseEntity<>(energyStoreDTO, HttpStatus.OK);
     }
+
+    @PutMapping("{energyStoreId}")
+    public ResponseEntity<EnergyStoreDTO> editEnergyStore(@Valid @RequestBody NewEnergyStore newEnergyStore, @PathVariable("energyStoreId") Long energyStoreId) {
+        EnergyStoreDTO energyStoreDTO = energyStoreService.editEnergyStore(newEnergyStore, energyStoreId).toDTO();
+        return  new ResponseEntity<>(energyStoreDTO, HttpStatus.OK);
+    }
 }
