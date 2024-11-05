@@ -17,6 +17,7 @@ public class FairDraw implements DrawStrategy {
     private final NetworkRepository networkRepository;
 
     public Float draw(Float amount, Long networkId) {
+        amount = Math.round(amount * 100.0f) / 100.0f;
         Network network = networkRepository.findById(networkId).orElseThrow(() -> new NetworkNotFoundException(networkId));
         float networkCurrentCapacity = network.getCurrentCapacity();
 
@@ -35,7 +36,7 @@ public class FairDraw implements DrawStrategy {
                 networkCurrentCapacity -= energyStore.getCurrentCapacity();
                 targetPercentage = (networkCurrentCapacity - amount) / networkMaxCapacity;
             } else {
-                float targetValue = targetPercentage * energyStore.getMaxCapacity();
+                float targetValue = Math.round(targetPercentage * energyStore.getMaxCapacity() * 100.0f) / 100.0f;
                 energyStore.drawCapacity(energyStore.getCurrentCapacity() - targetValue);
             }
         }
