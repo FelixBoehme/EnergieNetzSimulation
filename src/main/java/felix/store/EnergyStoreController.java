@@ -68,7 +68,7 @@ public class EnergyStoreController {
     @PostMapping("network/{networkId}")
     public ResponseEntity<EnergyStoreDTO> addEnergyStoreWithNetwork(@Valid @RequestBody NewEnergyStore newEnergyStore, @PathVariable("networkId") Long networkId) {
         EnergyStoreDTO energyStoreDTO = energyStoreService.addEnergyStoreWithNetwork(newEnergyStore, networkId).toDTO();
-        return new ResponseEntity<>(energyStoreDTO, HttpStatus.OK);
+        return new ResponseEntity<>(energyStoreDTO, HttpStatus.CREATED);
     }
 
     @PutMapping("{energyStoreId}/capacity/{change}")
