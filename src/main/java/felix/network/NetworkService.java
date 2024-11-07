@@ -49,6 +49,7 @@ public class NetworkService {
         energyStore.setNetwork(network);
 
         networkRepository.increaseTotalStores(networkId);
+        networkRepository.updateCapacity(networkId, energyStore.getCurrentCapacity(), energyStore.getMaxCapacity());
 
         return energyStoreRepository.save(energyStore);
     }
